@@ -7,7 +7,10 @@
  *                          the next hue, which approximates a conic gradient
  *                          (SVG has no native conic). Clockwise from 12: purple,
  *                          magenta, red, orange, yellow, green, teal, blue, indigo.
- *   r=21  cradle arcs    — the two "hands", gaps at top and bottom
+ *   r=22  cradle arcs    — the two "hands", spanning 20-160deg and 200-340deg.
+ *                          Endpoints are computed on the circle, not eyeballed:
+ *                          if they are not exactly r from (32,32) the arc's real
+ *                          centre shifts off-centre and rotating it wobbles.
  *   r=11  planet         — ocean fill, land masses, graticule
  *
  * Detail levels, because a rainbow ring plus continents is mush below ~28px:
@@ -90,12 +93,12 @@ const armW  = detail === 'compact' ? 3.6 : 3;
   {detail !== 'micro' && (
     <g class="mk-arms" fill="none" stroke-linecap="round">
       <g stroke="var(--brand-line)" stroke-width={armW + 1.7}>
-        <path class="mk-arm-r" pathLength="1" d="M40.18 12.98A22 22 0 0 1 40.18 51.02" />
-        <path class="mk-arm-l" pathLength="1" d="M23.82 51.02A22 22 0 0 1 23.82 12.98" />
+        <path class="mk-arm-r" pathLength="1" d="M39.524 11.327A22 22 0 0 1 39.524 52.673" />
+        <path class="mk-arm-l" pathLength="1" d="M24.476 52.673A22 22 0 0 1 24.476 11.327" />
       </g>
       <g stroke="var(--brand-hand)" stroke-width={armW}>
-        <path class="mk-arm-r" pathLength="1" d="M40.18 12.98A22 22 0 0 1 40.18 51.02" />
-        <path class="mk-arm-l" pathLength="1" d="M23.82 51.02A22 22 0 0 1 23.82 12.98" />
+        <path class="mk-arm-r" pathLength="1" d="M39.524 11.327A22 22 0 0 1 39.524 52.673" />
+        <path class="mk-arm-l" pathLength="1" d="M24.476 52.673A22 22 0 0 1 24.476 11.327" />
       </g>
     </g>
   )}

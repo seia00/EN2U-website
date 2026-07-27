@@ -35,22 +35,15 @@ import Mark from './Mark.astro';
     transform-box: view-box;
     transform-origin: 32px 32px;
   }
-  .hero-mark :global(.mk-ring) { animation: orbit 48s linear infinite; }
+  /* Both hands orbit the same circle at r=22 about (32,32), counter-rotating on
+     different periods so they meet, part, and meet again at a point that keeps
+     moving around the ring. This only glides cleanly because the two arcs are
+     genuinely concentric — see the note in Mark.astro. */
+  .hero-mark :global(.mk-ring)  { animation: orbit 48s linear infinite; }
+  .hero-mark :global(.mk-arm-r) { animation: orbit 28s linear infinite; }
+  .hero-mark :global(.mk-arm-l) { animation: orbit 36s linear infinite reverse; }
 
-  /* The hands BREATHE rather than orbit, equal and opposite on one shared
-     period. arm-r spans 20deg..160deg and arm-l spans 200deg..340deg, which are
-     mirror images about the vertical axis; rotating them by +p and -p keeps
-     that mirror exact at every frame, so the gaps at top and bottom always
-     match. Rotating them on different periods (the previous 28s/36s) let the
-     relative angle drift, so the ends drifted near each other without meeting.
-     Full opposed rotation is no good either — at p=90deg the two arcs coincide
-     exactly and stack into one. Oscillating +-16deg never reaches that. */
-  .hero-mark :global(.mk-arm-r) { animation: breatheR 9s ease-in-out infinite alternate; }
-  .hero-mark :global(.mk-arm-l) { animation: breatheL 9s ease-in-out infinite alternate; }
-
-  @keyframes orbit   { to { transform: rotate(360deg); } }
-  @keyframes breatheR { from { transform: rotate(-16deg); } to { transform: rotate(16deg); } }
-  @keyframes breatheL { from { transform: rotate(16deg); }  to { transform: rotate(-16deg); } }
+  @keyframes orbit { to { transform: rotate(360deg); } }
 
   /* Below the 2-column breakpoint the hero is text-only — a mark stacked above
      the headline would push the LCP element down the page, and a forever-looping
