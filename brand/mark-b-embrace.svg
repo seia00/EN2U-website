@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="en2u-b-title">
+  <title id="en2u-b-title">EN2U</title>
+  <g id="mark" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <g id="globe">
+      <circle id="globe-edge" cx="32" cy="32" r="12"/>
+      <path id="globe-equator" d="M20 32H44"/>
+      <path id="globe-meridian" d="M32 20C25.8 24 25.8 40 32 44"/>
+    </g>
+    <g id="hands">
+      <path id="hand-left"  d="M22.5 8.7A26 26 0 0 0 8.7 22.5"/>
+      <path id="hand-right" d="M41.5 55.3A26 26 0 0 0 55.3 41.5"/>
+      <path id="arc-left"  d="M8.7 41.5A26 26 0 0 0 22.5 55.3"/>
+      <path id="arc-right" d="M55.3 22.5A26 26 0 0 0 41.5 8.7"/>
+    </g>
+  </g>
+</svg>

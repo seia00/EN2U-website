@@ -1,0 +1,115 @@
+/* ==========================================================================
+   EN2U — design tokens
+   Single source of truth. No hardcoded hex in components.
+   ========================================================================== */
+
+/* ---- Palette themes -----------------------------------------------------
+   Applied via [data-palette] so /style-preview can render all five at once.
+   The winner gets promoted to :root and the rest deleted.
+   Every text/bg pair below is WCAG AA verified (>=4.5:1 body, >=3:1 large).
+   RULE: accent is a *fill* colour. Text on accent is always --bg, never --ink.
+   -------------------------------------------------------------------------- */
+
+[data-palette="indigo"] {
+  --bg:      #ECEBE4;  /* chalk */
+  --surface: #F8F7F2;  /* raised */
+  --ink:     #16233A;  /* indigo-black */
+  --accent:  #7A5F22;  /* brass */
+  --muted:   #55637A;  /* slate */
+  --hairline: rgb(22 35 58 / 14%);
+}
+[data-palette="chalkboard"] {
+  --bg:      #1B2621;  /* board green */
+  --surface: #243029;
+  --ink:     #E8E9E3;  /* chalk */
+  --accent:  #D9A83C;  /* ochre */
+  --muted:   #9AAAA2;  /* sage */
+  --hairline: rgb(232 233 227 / 16%);
+}
+[data-palette="seal"] {
+  --bg:      #EFEEEA;
+  --surface: #F8F7F4;
+  --ink:     #14171C;
+  --accent:  #8E2C1E;  /* cinnabar */
+  --muted:   #6A6760;  /* stone — darkened from #77746D, which failed AA at 4.02:1 */
+  --hairline: rgb(20 23 28 / 14%);
+}
+[data-palette="signal"] {
+  --bg:      #FAFAF8;
+  --surface: #F0F1EC;
+  --ink:     #1A1C1F;
+  --accent:  #1B6042;  /* deep green */
+  --muted:   #5E6560;
+  --hairline: rgb(26 28 31 / 13%);
+}
+[data-palette="marigold"] {
+  --bg:      #E6E8EA;  /* cool slate */
+  --surface: #F5F6F7;
+  --ink:     #1C2128;
+  --accent:  #8A5B10;  /* marigold */
+  --muted:   #566170;
+  --hairline: rgb(28 33 40 / 14%);
+}
+
+:root {
+  /* ---- Type ------------------------------------------------------------ */
+  --font-sans: 'IBM Plex Sans', 'IBM Plex Sans JP', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* 5 sizes, no more (Phase 4). Fluid between 375px and 1280px. */
+  --t-display: clamp(2.25rem, 1.2rem + 4.4vw, 4rem);      /* 36 -> 64 */
+  --t-title:   clamp(1.5rem, 1.05rem + 1.9vw, 2.25rem);   /* 24 -> 36 */
+  --t-lead:    clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);   /* 17 -> 20 */
+  --t-body:    1rem;                                       /* 16 */
+  --t-meta:    0.8125rem;                                  /* 13 */
+
+  --lh-tight: 1.1;
+  --lh-body:  1.65;
+  --lh-body-ja: 1.85;   /* JP needs more (§6) */
+  --measure: 65ch;      /* the actual whitespace fix — horizontal, not vertical */
+
+  /* ---- Spacing — 4px base ---------------------------------------------- */
+  --s-1: 4px;   --s-2: 8px;   --s-3: 12px;  --s-4: 16px;
+  --s-5: 24px;  --s-6: 32px;  --s-7: 48px;  --s-8: 64px;
+  --s-9: 96px;  --s-10: 128px; --s-11: 160px;
+  --section-y: clamp(64px, 10vw, 128px);
+  --gutter:    clamp(20px, 5vw, 48px);
+  --maxw: 1140px;
+
+  /* ---- Radius — one value, no exceptions ------------------------------- */
+  --radius: 4px;
+
+  /* ---- Motion (Phase 3) ------------------------------------------------ */
+  --ease-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit:     cubic-bezier(0.7, 0, 0.84, 0);
+  --d-micro:  150ms;   /* hover, focus */
+  --d-enter:  500ms;   /* reveals */
+  --d-route:  280ms;   /* page transition */
+  --stagger:   70ms;
+}
+
+/* Honour reduced motion globally — every primitive inherits this. */
+@media (prefers-reduced-motion: reduce) {
+  :root { --d-micro: 0ms; --d-enter: 0ms; --d-route: 0ms; --stagger: 0ms; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---- Japanese typography (§6) ------------------------------------------ */
+:lang(ja) {
+  line-height: var(--lh-body-ja);
+  /* never negative tracking on JP */
+  letter-spacing: normal;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+:lang(ja) h1, :lang(ja) h2, :lang(ja) h3 {
+  line-break: strict;      /* stop particles stranding */
+  letter-spacing: normal;
+}
+/* Latin display gets tight tracking; JP explicitly does not. */
+:lang(en) .display, :lang(en) .title { letter-spacing: -0.02em; }

@@ -1,0 +1,207 @@
+---
+/**
+ * Specimen — renders the same real components under a given palette + locale
+ * so palettes are judged in context, not as swatches.
+ */
+export interface Props { palette: string; locale: 'en' | 'ja'; }
+const { palette, locale } = Astro.props;
+
+const copy = {
+  en: {
+    nav:      ['What we do', 'Impact', 'About'],
+    lang:     '日本語',
+    eyebrow:  '01 — What we do',
+    display:  'English to Uplift & Utilize',
+    lead:     'We build English curricula and give them to the teachers and organisations already working with students who need them.',
+    statsHead:'Guatemala, 2024–25',
+    stats: [
+      { v: '1',    l: 'year of weekly lessons', fill: 100, n: 'Guatemala literacy program' },
+      { v: '20+',  l: 'hours of instruction',   fill: 62,  n: 'One hour per group, weekly' },
+      { v: '100+', l: 'students reached',       fill: 78,  n: 'Direct and via partners' },
+    ],
+    cardHead: 'How the curriculum works',
+    cards: [
+      { t: 'Built for low-bandwidth',  b: 'Image-first slides that work when devices and connectivity are scarce.' },
+      { t: 'Handed to local teachers', b: 'Partners deliver the lessons. We supply materials, structure and feedback.' },
+      { t: 'Revised after every run',  b: 'Teacher notes feed the next version of the curriculum.' },
+    ],
+    reachHead: 'Get in touch',
+    reachBody: 'We work with organisations already teaching. If that is you, reach out.',
+  },
+  ja: {
+    nav:      ['活動内容', '活動実績', '私たちについて'],
+    lang:     'English',
+    eyebrow:  '01 — 活動内容',
+    display:  '英語で向上し、活用する',
+    lead:     '英語カリキュラムを制作し、生徒と向き合う教師や団体に提供しています。',
+    statsHead:'グアテマラ 2024–25年',
+    stats: [
+      { v: '1年',   l: '毎週のレッスン', fill: 100, n: 'グアテマラ識字プロジェクト' },
+      { v: '20+',   l: '指導時間',       fill: 62,  n: '1グループにつき週1時間' },
+      { v: '100+',  l: '届いた生徒数',   fill: 78,  n: '直接指導およびパートナー経由' },
+    ],
+    cardHead: 'カリキュラムの仕組み',
+    cards: [
+      { t: '低帯域環境に対応',     b: '端末や通信環境が限られていても使える、画像中心のスライド。' },
+      { t: '現地の教師へ引き渡し', b: 'レッスンはパートナーが実施。私たちは教材と構成、フィードバックを提供します。' },
+      { t: '実施ごとに改訂',       b: '教師からの記録を次のカリキュラムに反映します。' },
+    ],
+    reachHead: 'お問い合わせ',
+    reachBody: 'すでに教えている団体と協働しています。ぜひご連絡ください。',
+  },
+}[locale];
+---
+
+<div class="specimen" data-palette={palette} lang={locale}>
+
+  <nav class="nav">
+    <span class="brand">
+      <svg width="26" height="26" viewBox="0 0 64 64" fill="none" stroke="currentColor"
+           stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="32" cy="32" r="12"></circle><path d="M20 32H44"></path>
+        <path d="M32 20C25.8 24 25.8 40 32 44"></path>
+        <path d="M22.5 8.7A26 26 0 0 0 8.7 22.5"></path><path d="M41.5 55.3A26 26 0 0 0 55.3 41.5"></path>
+        <path d="M8.7 41.5A26 26 0 0 0 22.5 55.3"></path><path d="M55.3 22.5A26 26 0 0 0 41.5 8.7"></path>
+      </svg>
+      <b>EN2U</b>
+    </span>
+    <span class="navlinks">
+      {copy.nav.map((n) => <a href="#">{n}</a>)}
+      <a href="#" class="langbtn">{copy.lang}</a>
+    </span>
+  </nav>
+
+  <header class="hero">
+    <p class="eyebrow">{copy.eyebrow}</p>
+    <h1 class="display">{copy.display}</h1>
+    <p class="lead">{copy.lead}</p>
+  </header>
+
+  <section class="block">
+    <p class="eyebrow">{copy.statsHead}</p>
+    <div class="stats">
+      {copy.stats.map((s) => (
+        <div class="threshold">
+          <div class="th-value">{s.v}</div>
+          <div class="th-label">{s.l}</div>
+          <div class="th-rule"><i style={`width:${s.fill}%`}></i></div>
+          <div class="th-note">{s.n}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="block">
+    <p class="eyebrow">{copy.cardHead}</p>
+    <div class="cards">
+      {copy.cards.map((c) => (
+        <article class="card">
+          <h3>{c.t}</h3>
+          <p>{c.b}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="block reach">
+    <h2 class="title">{copy.reachHead}</h2>
+    <p class="lead">{copy.reachBody}</p>
+    <p class="btnrow">
+      <a href="#" class="btn">@en2u_npo</a>
+      <a href="#" class="btn btn-ghost">en2u.org@gmail.com</a>
+    </p>
+  </section>
+
+</div>
+
+<style>
+  .specimen {
+    background: var(--bg); color: var(--ink);
+    font-family: var(--font-sans);
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  /* nav */
+  .nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--s-4) var(--s-5);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .brand { display: inline-flex; align-items: center; gap: var(--s-3); }
+  .brand b { font-size: 1.0625rem; font-weight: 700; letter-spacing: -0.01em; }
+  .navlinks { display: flex; align-items: center; gap: var(--s-5); font-size: var(--t-meta); }
+  .navlinks a { color: var(--muted); text-decoration: none; }
+  .langbtn {
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    padding: var(--s-1) var(--s-3); color: var(--ink) !important;
+  }
+
+  /* hero */
+  .hero { padding: var(--s-8) var(--s-5) var(--s-7); }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: var(--t-meta);
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+    margin-bottom: var(--s-4);
+  }
+  :global([lang="ja"]) .eyebrow { letter-spacing: 0.02em; text-transform: none; }
+  .display {
+    font-size: var(--t-display); font-weight: 600;
+    line-height: var(--lh-tight); margin: 0 0 var(--s-5);
+    max-width: 18ch;
+  }
+  .title { font-size: var(--t-title); font-weight: 600; line-height: 1.2; margin: 0 0 var(--s-4); }
+  .lead {
+    font-size: var(--t-lead); line-height: var(--lh-body);
+    color: var(--muted); max-width: 52ch; margin: 0;
+  }
+  :global([lang="ja"]) .lead { line-height: var(--lh-body-ja); }
+
+  .block { padding: var(--s-7) var(--s-5); border-top: 1px solid var(--hairline); }
+
+  /* ---- SIGNATURE ELEMENT: the threshold rule ---- */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-6); }
+  .th-value {
+    font-family: var(--font-mono); font-size: var(--t-title);
+    font-weight: 500; line-height: 1; font-feature-settings: 'tnum' 1;
+  }
+  .th-label { font-size: var(--t-meta); color: var(--ink); margin-top: var(--s-2); }
+  .th-rule {
+    height: 3px; background: var(--hairline); margin-top: var(--s-3);
+    border-radius: 999px; overflow: hidden;
+  }
+  .th-rule i {
+    display: block; height: 100%; background: var(--accent);
+    border-radius: 999px;
+    transition: width var(--d-enter) var(--ease-entrance);
+  }
+  .th-note { font-size: var(--t-meta); color: var(--muted); margin-top: var(--s-2); }
+
+  /* cards */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-4); }
+  .card {
+    background: var(--surface); border: 1px solid var(--hairline);
+    border-radius: var(--radius); padding: var(--s-5);
+    transition: transform var(--d-micro) var(--ease-entrance);
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card h3 { font-size: var(--t-body); font-weight: 600; margin: 0 0 var(--s-2); }
+  .card p { font-size: var(--t-meta); line-height: var(--lh-body); color: var(--muted); margin: 0; }
+  :global([lang="ja"]) .card p { line-height: var(--lh-body-ja); }
+
+  /* reach */
+  .btnrow { display: flex; gap: var(--s-3); margin: var(--s-5) 0 0; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; padding: var(--s-3) var(--s-5);
+    background: var(--accent); color: var(--bg);
+    text-decoration: none; border-radius: var(--radius);
+    font-size: var(--t-meta); font-weight: 600;
+    border: 1px solid var(--accent);
+  }
+  .btn-ghost { background: transparent; color: var(--ink); border-color: var(--hairline); }
+
+  @media (max-width: 700px) {
+    .stats, .cards { grid-template-columns: 1fr; }
+    .navlinks a:not(.langbtn) { display: none; }
+  }
+</style>

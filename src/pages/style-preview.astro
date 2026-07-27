@@ -1,0 +1,101 @@
+---
+import Specimen from '../components/Specimen.astro';
+import '../styles/tokens.css';
+
+const palettes = [
+  { id: 'indigo',     name: 'Indigo & Chalk',
+    roles: 'bg #ECEBE4 · surface #F8F7F2 · ink #16233A · accent #7A5F22 · muted #55637A',
+    why:   'Japanese ai indigo as the ink, classroom chalk as the ground. Institutional without reading governmental.',
+    delta: 'bg Δ21 · ink Δ37 · accent Δ67 from current' },
+  { id: 'chalkboard', name: 'Chalkboard',
+    roles: 'bg #1B2621 · surface #243029 · ink #E8E9E3 · accent #D9A83C · muted #9AAAA2',
+    why:   'Literal to teaching without being cute. A dark base is rare in this sector and instantly differentiating.',
+    delta: 'bg Δ368 · ink Δ356 · accent Δ83 — by far the most distinct' },
+  { id: 'seal',       name: 'Ink & Seal',
+    roles: 'bg #EFEEEA · surface #F8F7F4 · ink #14171C · accent #8E2C1E · muted #6A6760',
+    why:   'Cinnabar carries across Japanese shu seals and Guatemalan textile. Warm without being soft.',
+    delta: 'bg Δ15 · ink Δ10 — ground and ink are near-identical to the current site' },
+  { id: 'signal',     name: 'Signal',
+    roles: 'bg #FAFAF8 · surface #F0F1EC · ink #1A1C1F · accent #1B6042 · muted #5E6560',
+    why:   'Near-monochrome, one accent. The most funder-safe option and the least memorable one.',
+    delta: 'bg Δ10 · ink Δ9 — ground and ink are near-identical to the current site' },
+  { id: 'marigold',   name: 'Slate & Marigold',
+    roles: 'bg #E6E8EA · surface #F5F6F7 · ink #1C2128 · accent #8A5B10 · muted #566170',
+    why:   'Cool ground, warm accent — an uncommon pairing here. Marigold reads across Guatemalan textile and Japanese warmth without landing on terracotta.',
+    delta: 'bg Δ25 · ink Δ19 · accent Δ62 from current' },
+];
+---
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EN2U — palette comparison</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="page">
+    <p class="kicker">EN2U — Phase 5</p>
+    <h1>Palette comparison</h1>
+    <p class="intro">
+      Five palettes rendering the same real components in both locales. Every text/background pair
+      is WCAG AA verified. <b>Δ is euclidean RGB distance from the current site</b> — the brief
+      required each option be visibly distinct, and two of these are not.
+    </p>
+    <p class="warn">
+      Copy below is <b>proposed, not approved</b> — the model pivot means every string needs rewriting.
+      Japanese strings reuse the existing site copy where the meaning still holds; the rest need your verification.
+      Numbers shown are the corrected set (no “3 continents”, no follower count).
+    </p>
+
+    {palettes.map((p, i) => (
+      <section class="opt">
+        <div class="opt-head">
+          <h2><span class="num">{String(i + 1).padStart(2, '0')}</span> {p.name}</h2>
+          <p class="roles">{p.roles}</p>
+          <p class="why">{p.why}</p>
+          <p class={p.delta.includes('near-identical') ? 'delta bad' : 'delta'}>{p.delta}</p>
+        </div>
+        <div class="pair">
+          <div><p class="loc">English</p><Specimen palette={p.id} locale="en" /></div>
+          <div><p class="loc">日本語</p><Specimen palette={p.id} locale="ja" /></div>
+        </div>
+      </section>
+    ))}
+  </div>
+
+  <style is:global>
+    body {
+      margin: 0; background: #fff; color: #14171C;
+      font-family: 'IBM Plex Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { max-width: 1500px; margin: 0 auto; padding: 48px 32px 120px; }
+    .kicker {
+      font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+      letter-spacing: .12em; text-transform: uppercase; color: #6A6760; margin: 0 0 8px;
+    }
+    h1 { font-size: 30px; font-weight: 600; letter-spacing: -.02em; margin: 0 0 12px; }
+    .intro, .warn { font-size: 15px; line-height: 1.65; color: #4A4740; max-width: 78ch; margin: 0 0 12px; }
+    .warn {
+      background: #FFF8E6; border-left: 3px solid #C9971F;
+      padding: 12px 16px; border-radius: 4px; margin-bottom: 40px;
+    }
+    .opt { margin-top: 56px; }
+    .opt-head { border-top: 2px solid #14171C; padding-top: 14px; margin-bottom: 20px; }
+    .opt-head h2 { font-size: 19px; font-weight: 600; margin: 0 0 8px; }
+    .num { font-family: 'IBM Plex Mono', monospace; color: #8B8880; font-weight: 400; margin-right: 8px; }
+    .roles { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6A6760; margin: 0 0 8px; }
+    .why   { font-size: 14px; line-height: 1.6; color: #4A4740; margin: 0 0 6px; max-width: 80ch; }
+    .delta { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #1B6042; margin: 0; }
+    .delta.bad { color: #8E2C1E; font-weight: 500; }
+    .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .loc {
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+      letter-spacing: .1em; text-transform: uppercase; color: #8B8880; margin: 0 0 8px;
+    }
+    @media (max-width: 1100px) { .pair { grid-template-columns: 1fr; } }
+  </style>
+</body>
+</html>
