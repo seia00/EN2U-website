@@ -3,14 +3,14 @@ import Mark from './Mark.astro';
 /**
  * Large brand mark for the hero's empty right column.
  *
- * Motion: the rainbow ring rotates slowly (48s) so the hue under any given
- * point drifts; the two hands orbit at 28s and 36s in opposite directions; the
- * planet stays still. Nothing shares a period, so the composition never settles
- * into a visible loop.
+ * Motion: everything turns the same way and never reverses. The rainbow ring
+ * rotates at 60s; the two hands rotate together as one rigid group at 34s, so
+ * the gap between them is fixed; the planet stays still. The speed difference
+ * is what gives it depth.
  *
  * Deliberately not a spin of the whole mark — at spin speed a ringed circular
  * logo reads as a loading spinner. To do that anyway: put `orbit 20s linear
- * infinite` on `.hero-mark :global(svg)` and delete the three rules below.
+ * infinite` on `.hero-mark :global(svg)` and delete the two rules below.
  *
  * Styles reach into Mark's internals, so they need :global — Astro scopes
  * component CSS to the component that declares it.
@@ -30,18 +30,18 @@ import Mark from './Mark.astro';
   .hero-mark :global(svg) { width: 100%; height: auto; }
 
   .hero-mark :global(.mk-ring),
-  .hero-mark :global(.mk-arm-l),
-  .hero-mark :global(.mk-arm-r) {
+  .hero-mark :global(.mk-arms) {
     transform-box: view-box;
     transform-origin: 32px 32px;
   }
-  /* Both hands orbit the same circle at r=22 about (32,32), counter-rotating on
-     different periods so they meet, part, and meet again at a point that keeps
-     moving around the ring. This only glides cleanly because the two arcs are
-     genuinely concentric — see the note in Mark.astro. */
-  .hero-mark :global(.mk-ring)  { animation: orbit 48s linear infinite; }
-  .hero-mark :global(.mk-arm-r) { animation: orbit 28s linear infinite; }
-  .hero-mark :global(.mk-arm-l) { animation: orbit 36s linear infinite reverse; }
+  /* The hands rotate as ONE rigid group, so their spacing never changes and
+     nothing can appear to reverse. Counter-rotating them (the previous 28s
+     forward / 36s reverse) made the pair repeatedly close and open, which reads
+     as bouncing even though each arc was individually travelling one way.
+     Ring and hands now share a direction and differ only in speed — parallax,
+     no convergence beat. */
+  .hero-mark :global(.mk-ring) { animation: orbit 60s linear infinite; }
+  .hero-mark :global(.mk-arms) { animation: orbit 34s linear infinite; }
 
   @keyframes orbit { to { transform: rotate(360deg); } }
 
@@ -52,7 +52,6 @@ import Mark from './Mark.astro';
 
   @media (prefers-reduced-motion: reduce) {
     .hero-mark :global(.mk-ring),
-    .hero-mark :global(.mk-arm-l),
-    .hero-mark :global(.mk-arm-r) { animation: none; }
+    .hero-mark :global(.mk-arms) { animation: none; }
   }
 </style>
