@@ -1,5 +1,6 @@
 ---
 import { t, type Locale } from '../i18n/strings';
+import HeroMark from './HeroMark.astro';
 export interface Props { locale: Locale; }
 const { locale } = Astro.props;
 const s = t(locale);
@@ -9,10 +10,13 @@ const s = t(locale);
      Fully present in the SSR'd HTML and visible on first paint (no reveal
      on the h1) so LCP is never blocked. -->
 <section class="section hero">
-  <div class="wrap">
-    <p class="eyebrow">{s.hero.eyebrow}</p>
-    <h1 class="display">{s.hero.title}</h1>
-    <p class="lead hero-lead">{s.hero.lead}</p>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">{s.hero.eyebrow}</p>
+      <h1 class="display">{s.hero.title}</h1>
+      <p class="lead hero-lead">{s.hero.lead}</p>
+    </div>
+    <HeroMark />
   </div>
 </section>
 
@@ -102,6 +106,13 @@ const s = t(locale);
 
 <style>
   .hero { padding-block: clamp(56px, 12vw, 128px) var(--section-y); }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s-7);
+    align-items: center;
+  }
+  @media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; } }
   .hero-lead { margin-top: var(--s-5); font-size: var(--t-lead); }
   :global(:lang(ja)) .hero-lead { line-height: var(--lh-body-ja); }
 

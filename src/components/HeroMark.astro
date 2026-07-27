@@ -1,0 +1,57 @@
+---
+/**
+ * Large decorative mark for the hero's empty right column.
+ *
+ * Motion: the globe stays fixed; the two cradle arcs orbit it slowly in
+ * opposite directions (28s / 36s per revolution). Deliberately not a spin of
+ * the whole mark — at spin speed a circular logo reads as a loading spinner,
+ * and the differing periods stop the two arcs ever locking into a pattern.
+ *
+ * To make the whole mark spin instead: move the `orbit` animation onto
+ * `.hero-mark svg` and delete the two `.orbit-*` rules.
+ *
+ * aria-hidden: purely decorative, and the accessible name already exists in
+ * the nav mark — announcing it twice is noise for a screen reader.
+ */
+---
+<div class="hero-mark" aria-hidden="true">
+  <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.1"
+       stroke-linecap="round" stroke-linejoin="round">
+    <g class="globe">
+      <circle cx="32" cy="25" r="13" />
+      <path d="M19 25H45" />
+      <ellipse cx="32" cy="25" rx="7" ry="13" />
+    </g>
+    <path class="orbit-a" d="M28.38 50.75A26 26 0 0 1 6.89 18.27" />
+    <path class="orbit-b" d="M57.11 18.27A26 26 0 0 1 35.62 50.75" />
+  </svg>
+</div>
+
+<style>
+  .hero-mark {
+    color: var(--ink);
+    opacity: 0.24;
+    justify-self: end;
+    align-self: center;
+    width: clamp(240px, 26vw, 360px);
+    pointer-events: none;
+  }
+  .hero-mark svg { width: 100%; height: auto; overflow: visible; }
+
+  .orbit-a, .orbit-b {
+    transform-box: view-box;
+    transform-origin: 32px 25px;
+  }
+  .orbit-a { animation: orbit 28s linear infinite; }
+  .orbit-b { animation: orbit 36s linear infinite reverse; }
+
+  @keyframes orbit { to { transform: rotate(360deg); } }
+
+  /* Below the 2-column breakpoint the hero is text-only — a decorative mark
+     stacked above the headline would push the LCP element down the page. */
+  @media (max-width: 860px) { .hero-mark { display: none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .orbit-a, .orbit-b { animation: none; }
+  }
+</style>
