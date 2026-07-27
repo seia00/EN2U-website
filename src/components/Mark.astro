@@ -36,15 +36,21 @@ const pt = (deg: number, r = R) => {
   const a = (deg * Math.PI) / 180;
   return [C + r * Math.sin(a), C - r * Math.cos(a)].map((n) => +n.toFixed(3));
 };
-/* 8 segments x 45deg, clockwise from 12 o'clock */
+/* 9 segments x 40deg, clockwise from 12 o'clock.
+   The cycle CLOSES: segment i blends stops[i] -> stops[(i+1) % 9], so the last
+   segment lands back on --rb-1. With 8 segments and 9 open-ended stops the ring
+   ended on indigo and restarted on purple — a hue step at 12 o'clock, which
+   travels visibly around the ring once it starts rotating. */
 const stops = ['--rb-1','--rb-2','--rb-3','--rb-4','--rb-5','--rb-6','--rb-7','--rb-8','--rb-9'];
+const N = stops.length;
+const STEP = 360 / N;
 /* Segments overlap by 0.6deg at each join and use butt caps. Round caps on
    abutting arcs pile up at the seams and show as dark pips on the ring. */
 const OVER = 0.6;
-const segs = Array.from({ length: 8 }, (_, i) => {
-  const [x1, y1] = pt(i * 45 - OVER);
-  const [x2, y2] = pt((i + 1) * 45 + OVER);
-  return { id: `rb-${uid}-${i}`, x1, y1, x2, y2, from: stops[i], to: stops[i + 1] };
+const segs = Array.from({ length: N }, (_, i) => {
+  const [x1, y1] = pt(i * STEP - OVER);
+  const [x2, y2] = pt((i + 1) * STEP + OVER);
+  return { id: `rb-${uid}-${i}`, x1, y1, x2, y2, from: stops[i], to: stops[(i + 1) % N] };
 });
 
 const ringW   = detail === 'micro' ? 5 : detail === 'compact' ? 4 : 3.2;
