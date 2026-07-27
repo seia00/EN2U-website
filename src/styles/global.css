@@ -1,0 +1,156 @@
+@import './tokens.css';
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img, svg { display: block; max-width: 100%; }
+a { color: inherit; }
+
+/* Visible keyboard focus everywhere (a11y requirement) */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection { background: var(--accent); color: var(--bg); }
+
+.skip-link {
+  position: absolute; left: -9999px;
+  background: var(--ink); color: var(--bg);
+  padding: var(--s-3) var(--s-4); border-radius: var(--radius); z-index: 999;
+}
+.skip-link:focus { left: var(--s-4); top: var(--s-4); }
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+.wrap { max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
+.section { padding-block: var(--section-y); }
+.section + .section { border-top: 1px solid var(--hairline); }
+
+/* ==========================================================================
+   Type — 5 sizes, no more
+   ========================================================================== */
+.display {
+  font-size: var(--t-display); font-weight: 600;
+  line-height: var(--lh-tight); text-wrap: balance;
+}
+.title { font-size: var(--t-title); font-weight: 600; line-height: 1.2; text-wrap: balance; }
+.lead  { font-size: var(--t-lead); color: var(--muted); max-width: 52ch; }
+.body  { font-size: var(--t-body); max-width: var(--measure); }
+.meta  { font-size: var(--t-meta); color: var(--muted); }
+
+:lang(en) .display, :lang(en) .title { letter-spacing: -0.02em; }
+
+.eyebrow {
+  font-family: var(--font-mono); font-size: var(--t-meta);
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: var(--s-4);
+  display: flex; align-items: baseline; gap: var(--s-3);
+}
+.eyebrow .n { color: var(--accent); }
+:lang(ja) .eyebrow { letter-spacing: 0.02em; text-transform: none; }
+
+/* ==========================================================================
+   MOTION PRIMITIVES (Phase 3) — defined once, reused everywhere.
+   No bespoke one-offs anywhere in the codebase.
+   ========================================================================== */
+
+/* reveal — fade + 16px rise on scroll into view, once */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity   var(--d-enter) var(--ease-entrance),
+    transform var(--d-enter) var(--ease-entrance);
+}
+[data-reveal].is-in { opacity: 1; transform: none; }
+
+/* stagger — children revealed --stagger apart */
+[data-stagger] > * { transition-delay: calc(var(--i, 0) * var(--stagger)); }
+
+/* hover-lift — cards */
+[data-lift] { transition: transform var(--d-micro) var(--ease-entrance),
+                          border-color var(--d-micro) var(--ease-entrance); }
+@media (hover: hover) {
+  [data-lift]:hover { transform: translateY(-2px); border-color: var(--accent); }
+}
+
+/* route-transition — native View Transitions, no library, no white flash */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation-duration: var(--d-route); }
+::view-transition-new(root) { animation-duration: var(--d-route); }
+
+/* No-JS / reduced-motion safety: content must never be stuck invisible. */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1 !important; transform: none !important; }
+}
+.no-js [data-reveal] { opacity: 1; transform: none; }
+
+/* ==========================================================================
+   Components
+   ========================================================================== */
+
+/* --- the threshold rule: SIGNATURE ELEMENT --- */
+.threshold .th-value {
+  font-family: var(--font-mono); font-size: var(--t-title);
+  font-weight: 500; line-height: 1; font-feature-settings: 'tnum' 1;
+}
+.threshold .th-label { font-size: var(--t-meta); margin-top: var(--s-2); }
+.threshold .th-rule {
+  height: 3px; background: var(--hairline);
+  margin-top: var(--s-3); border-radius: 999px; overflow: hidden;
+}
+.threshold .th-rule i {
+  display: block; height: 100%; width: 0; background: var(--accent);
+  border-radius: 999px;
+  transition: width 900ms var(--ease-entrance);
+}
+.threshold.is-in .th-rule i { width: var(--fill); }
+@media (prefers-reduced-motion: reduce) {
+  .threshold .th-rule i { width: var(--fill); transition: none; }
+}
+.threshold .th-note { font-size: var(--t-meta); color: var(--muted); margin-top: var(--s-2); }
+
+/* --- card --- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  padding: var(--s-5);
+}
+.card h3 { font-size: var(--t-body); font-weight: 600; margin-bottom: var(--s-2); }
+.card p  { font-size: var(--t-meta); color: var(--muted); }
+
+/* --- button --- */
+.btn {
+  display: inline-block; padding: var(--s-3) var(--s-5);
+  background: var(--accent); color: var(--bg);
+  border: 1px solid var(--accent); border-radius: var(--radius);
+  text-decoration: none; font-size: var(--t-meta); font-weight: 600;
+  transition: opacity var(--d-micro) var(--ease-entrance);
+}
+.btn:hover { opacity: .88; }
+.btn-ghost { background: transparent; color: var(--ink); border-color: var(--hairline); }
+
+/* --- grids --- */
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-7); }
+@media (max-width: 760px) {
+  .grid-3, .grid-2 { grid-template-columns: 1fr; gap: var(--s-4); }
+}

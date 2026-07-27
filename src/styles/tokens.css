@@ -51,6 +51,19 @@
   --hairline: rgb(28 33 40 / 14%);
 }
 
+/* ---- CHOSEN PALETTE ------------------------------------------------------
+   Indigo & Chalk. To switch to Chalkboard, replace the five values below
+   with the [data-palette="chalkboard"] block above. Nothing else changes.
+   -------------------------------------------------------------------------- */
+:root {
+  --bg:      #ECEBE4;
+  --surface: #F8F7F2;
+  --ink:     #16233A;
+  --accent:  #7A5F22;
+  --muted:   #55637A;
+  --hairline: rgb(22 35 58 / 14%);
+}
+
 :root {
   /* ---- Type ------------------------------------------------------------ */
   --font-sans: 'IBM Plex Sans', 'IBM Plex Sans JP', system-ui, sans-serif;

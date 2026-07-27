@@ -1,0 +1,134 @@
+---
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+import { t, altPath, type Locale } from '../i18n/strings';
+
+export interface Props { locale: Locale; path?: string; }
+const { locale, path = '/' } = Astro.props;
+const s = t(locale);
+const other = altPath(locale, path);
+const home = locale === 'ja' ? '/ja' : '/';
+---
+<!doctype html>
+<html lang={s.htmlLang} class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{s.siteTitle}</title>
+  <meta name="description" content={s.metaDesc} />
+  <link rel="icon" href="/pictures/fav.png" type="image/png" />
+  <link rel="alternate" hreflang={locale === 'en' ? 'ja' : 'en'} href={other} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href={
+      locale === 'ja'
+        ? 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+JP:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap'
+        : 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap'
+    }
+  />
+  <script is:inline>
+    /* Swap no-js -> js before first paint so reveals can start hidden
+       without ever trapping content for non-JS users. */
+    document.documentElement.classList.remove('no-js');
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">{s.nav.skip}</a>
+
+  <header class="site-nav">
+    <div class="wrap nav-inner">
+      <a href={home} class="brand" aria-label="EN2U">
+        <Logo size={28} detail={false} />
+        <b>EN2U</b>
+      </a>
+      <nav class="nav-links">
+        <a href={`${home === '/' ? '' : home}/#what`}>{s.nav.what}</a>
+        <a href={`${home === '/' ? '' : home}/#impact`}>{s.nav.impact}</a>
+        <a href={other} class="lang" aria-label={s.nav.toggleLabel} data-lang-link>{s.nav.toggle}</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <slot />
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap foot-inner">
+      <div>
+        <b>{s.footer.rights}</b>
+        <p class="meta">{s.footer.tag}</p>
+      </div>
+      <div class="foot-links meta">
+        <a href="https://www.instagram.com/en2u_npo/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="mailto:en2u.org@gmail.com">Email</a>
+      </div>
+    </div>
+  </footer>
+
+  <script is:inline>
+    /* ---- reveal + stagger + count-up: one IntersectionObserver, ~700 bytes.
+       No animation library. Budget: 40KB allowed, 0KB used. ---- */
+    (function () {
+      var els = document.querySelectorAll('[data-reveal]');
+      if (!('IntersectionObserver' in window)) {
+        els.forEach(function (el) { el.classList.add('is-in'); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
+      els.forEach(function (el) { io.observe(el); });
+
+      /* Preserve scroll position across the locale toggle (§6). */
+      var link = document.querySelector('[data-lang-link]');
+      if (link) {
+        link.addEventListener('click', function () {
+          try { sessionStorage.setItem('en2u:y', String(window.scrollY)); } catch (_) {}
+        });
+        try {
+          var y = sessionStorage.getItem('en2u:y');
+          if (y !== null) {
+            sessionStorage.removeItem('en2u:y');
+            window.scrollTo(0, parseInt(y, 10) || 0);
+          }
+        } catch (_) {}
+      }
+    })();
+  </script>
+
+  <style is:global>
+    .site-nav {
+      position: sticky; top: 0; z-index: 50;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--hairline);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-block: var(--s-3);
+    }
+    .brand { display: inline-flex; align-items: center; gap: var(--s-3); text-decoration: none; }
+    .brand b { font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; }
+    .nav-links { display: flex; align-items: center; gap: var(--s-5); font-size: var(--t-meta); }
+    .nav-links a { color: var(--muted); text-decoration: none; transition: color var(--d-micro); }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-links .lang {
+      color: var(--ink); border: 1px solid var(--hairline);
+      border-radius: var(--radius); padding: var(--s-1) var(--s-3);
+    }
+
+    .site-footer { border-top: 1px solid var(--hairline); padding-block: var(--s-6); margin-top: var(--s-8); }
+    .foot-inner { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-5); flex-wrap: wrap; }
+    .foot-links { display: flex; gap: var(--s-5); }
+    .foot-links a { text-decoration: none; }
+    .foot-links a:hover { color: var(--ink); }
+  </style>
+</body>
+</html>

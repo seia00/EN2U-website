@@ -1,0 +1,33 @@
+---
+/**
+ * EN2U mark — "Cradle" (option A).
+ * Redrawn from pictures/logo.png, which could not be traced
+ * (42,149 colours, woven patch texture, hand-lettered wordmark, 408px source).
+ *
+ * Stroke-based with semantic per-path ids so the preloader can draw it on.
+ * pathLength="1" normalises every path so one dashoffset value works for all.
+ */
+export interface Props {
+  size?: number;
+  detail?: boolean;   // false = simplified form for <=24px
+  title?: string;
+  class?: string;
+}
+const { size = 32, detail = true, title = 'EN2U', class: cls = '' } = Astro.props;
+const sw = size <= 24 ? 5 : size <= 32 ? 4 : size <= 64 ? 3.5 : 3;
+---
+<svg
+  class={`en2u-mark ${cls}`}
+  width={size} height={size} viewBox="0 0 64 64"
+  role="img" aria-label={title}
+  fill="none" stroke="currentColor" stroke-width={sw}
+  stroke-linecap="round" stroke-linejoin="round"
+>
+  <title>{title}</title>
+  <circle id="m-globe"    pathLength="1" cx="32" cy="25" r="14.5" />
+  {detail && <path id="m-equator"  pathLength="1" d="M17.5 25H46.5" />}
+  {detail && <path id="m-meridian-l" pathLength="1" d="M32 10.5C24.8 15 24.8 35 32 39.5" />}
+  {detail && <path id="m-meridian-r" pathLength="1" d="M32 10.5C39.2 15 39.2 35 32 39.5" />}
+  <path id="m-hand-l" pathLength="1" d="M8 33.5C8.6 45.5 18 53.5 30.5 54" />
+  <path id="m-hand-r" pathLength="1" d="M56 33.5C55.4 45.5 46 53.5 33.5 54" />
+</svg>
