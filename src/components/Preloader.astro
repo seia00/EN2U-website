@@ -1,0 +1,101 @@
+---
+import Logo from './Logo.astro';
+/**
+ * Logo draw-on preloader. Home route only.
+ *
+ * Sequence (1.59s total, under the 1.8s target):
+ *   0–1040ms  trace  — paths stroke on in human draw order, 80ms stagger
+ *   1040–1250ms hold
+ *   1250–1590ms handoff — overlay fades out
+ *
+ * On "fill": the mark is monoline, so there is no fill to wipe in. Instead the
+ * stroke settles from hairline to full weight at the end of each path's trace.
+ *
+ * On "settle": chose fade-out over a FLIP to the nav position. A FLIP would have
+ * to morph stroke-width between the 120px preloader mark (3px) and the 28px nav
+ * mark (4px), which reads as the outline thickening mid-flight. Fade has zero
+ * CLS risk and no morph artefact.
+ *
+ * Hard requirements met: once per session, SSR-safe (no window access during
+ * render), reduced-motion skips entirely, skippable on click/key/scroll,
+ * 2.5s hard timeout, hero sits in the SSR'd HTML underneath so it is painted.
+ */
+---
+<div id="preloader" class="pre" aria-hidden="true" data-preloader>
+  <Logo size={120} class="pre-mark" />
+</div>
+
+<script is:inline>
+  /* Runs before paint. Decides whether the overlay is shown at all, so there is
+     never a flash of overlay for repeat visitors or reduced-motion users. */
+  (function () {
+    var el = document.getElementById('preloader');
+    if (!el) return;
+
+    var reduce = false, seen = false;
+    try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (_) {}
+    try { seen = sessionStorage.getItem('en2u:pre') === '1'; } catch (_) {}
+
+    function kill() {
+      if (!el || !el.parentNode) return;
+      el.parentNode.removeChild(el);
+      el = null;
+      document.documentElement.classList.remove('pre-lock');
+      off();
+    }
+    function off() {
+      ['click', 'keydown', 'wheel', 'touchstart', 'scroll'].forEach(function (t) {
+        window.removeEventListener(t, kill);
+      });
+    }
+
+    if (reduce || seen) { kill(); return; }
+
+    try { sessionStorage.setItem('en2u:pre', '1'); } catch (_) {}
+    document.documentElement.classList.add('pre-lock');
+    el.classList.add('pre--run');
+
+    ['click', 'keydown', 'wheel', 'touchstart', 'scroll'].forEach(function (t) {
+      window.addEventListener(t, kill, { passive: true, once: true });
+    });
+
+    el.addEventListener('animationend', function (e) {
+      if (e.animationName === 'preOut') kill();
+    });
+
+    /* Hard timeout — the overlay can never trap a user on a blank screen. */
+    setTimeout(kill, 2500);
+  })();
+</script>
+
+<style is:global>
+  .pre {
+    position: fixed; inset: 0; z-index: 200;
+    background: var(--bg);
+    display: grid; place-items: center;
+    color: var(--ink);
+  }
+  /* Not running (no JS, or killed before class applied) => never covers content. */
+  .pre:not(.pre--run) { display: none; }
+  .pre-lock { overflow: hidden; }
+
+  .pre--run .m-path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: preDraw 640ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .pre--run .m-path[data-draw="1"] { animation-delay:   0ms; }
+  .pre--run .m-path[data-draw="2"] { animation-delay:  80ms; }
+  .pre--run .m-path[data-draw="3"] { animation-delay: 160ms; }
+  .pre--run .m-path[data-draw="4"] { animation-delay: 280ms; }
+  .pre--run .m-path[data-draw="5"] { animation-delay: 400ms; }
+
+  @keyframes preDraw { to { stroke-dashoffset: 0; } }
+
+  .pre--run { animation: preOut 340ms cubic-bezier(0.7, 0, 0.84, 0) 1250ms forwards; }
+  @keyframes preOut { to { opacity: 0; visibility: hidden; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pre { display: none !important; }
+  }
+</style>

@@ -1,7 +1,27 @@
 ---
 import Base from '../layouts/Base.astro';
 import Home from '../components/Home.astro';
+import Preloader from '../components/Preloader.astro';
 ---
 <Base locale="en" path="/">
+  <Preloader />
   <Home locale="en" />
 </Base>
+
+<script is:inline>
+  /* Legacy anchor forwarding.
+     A URL fragment is never sent to the server, so no vercel.json redirect can
+     see #purpose or #lessons — this has to happen client-side. Runs only when
+     an old fragment is actually present. */
+  (function () {
+    var map = {
+      '#purpose':  '/what-we-do',
+      '#lessons':  '/what-we-do',
+      '#whatwedo': '/what-we-do',
+      '#past':     '/impact'
+      /* #contact still exists on this page, so it is deliberately not mapped. */
+    };
+    var to = map[window.location.hash];
+    if (to) window.location.replace(to);
+  })();
+</script>

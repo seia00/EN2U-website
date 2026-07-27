@@ -1,0 +1,9 @@
+---
+import { t } from '../../i18n/strings';
+import Base from '../../layouts/Base.astro';
+import WhatWeDo from '../../components/WhatWeDo.astro';
+const s = t('ja');
+---
+<Base pageTitle={s.whatPage.title} locale="ja" path="/what-we-do">
+  <WhatWeDo locale="ja" />
+</Base>

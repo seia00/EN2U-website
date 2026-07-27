@@ -3,20 +3,30 @@ import '../styles/global.css';
 import Logo from '../components/Logo.astro';
 import { t, altPath, type Locale } from '../i18n/strings';
 
-export interface Props { locale: Locale; path?: string; }
-const { locale, path = '/' } = Astro.props;
+export interface Props { locale: Locale; path?: string; pageTitle?: string; }
+const { locale, path = '/', pageTitle } = Astro.props;
 const s = t(locale);
 const other = altPath(locale, path);
 const home = locale === 'ja' ? '/ja' : '/';
+/* Home keeps the full brand title; sub-pages get "Page — EN2U". */
+const title = pageTitle ? `${pageTitle} — EN2U` : s.siteTitle;
+const canonical = new URL(locale === 'ja' ? `/ja${path === '/' ? '' : path}` : path, Astro.site ?? 'https://en2u.vercel.app');
 ---
 <!doctype html>
 <html lang={s.htmlLang} class="no-js">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{s.siteTitle}</title>
+  <title>{title}</title>
   <meta name="description" content={s.metaDesc} />
-  <link rel="icon" href="/pictures/fav.png" type="image/png" />
+  <link rel="canonical" href={canonical.href} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={s.metaDesc} />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content={locale === 'ja' ? 'ja_JP' : 'en_US'} />
+  <link rel="icon" href="/pictures/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="/pictures/apple-touch-icon.png" />
+  <meta name="theme-color" content="#ECEBE4" />
   <link rel="alternate" hreflang={locale === 'en' ? 'ja' : 'en'} href={other} />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -44,8 +54,8 @@ const home = locale === 'ja' ? '/ja' : '/';
         <b>EN2U</b>
       </a>
       <nav class="nav-links">
-        <a href={`${home === '/' ? '' : home}/#what`}>{s.nav.what}</a>
-        <a href={`${home === '/' ? '' : home}/#impact`}>{s.nav.impact}</a>
+        <a href={`${home === '/' ? '' : home}/what-we-do`} aria-current={path === '/what-we-do' ? 'page' : undefined}>{s.nav.what}</a>
+        <a href={`${home === '/' ? '' : home}/impact`} aria-current={path === '/impact' ? 'page' : undefined}>{s.nav.impact}</a>
         <a href={other} class="lang" aria-label={s.nav.toggleLabel} data-lang-link>{s.nav.toggle}</a>
       </nav>
     </div>
@@ -123,6 +133,7 @@ const home = locale === 'ja' ? '/ja' : '/';
       color: var(--ink); border: 1px solid var(--hairline);
       border-radius: var(--radius); padding: var(--s-1) var(--s-3);
     }
+    .nav-links a[aria-current="page"] { color: var(--ink); }
 
     .site-footer { border-top: 1px solid var(--hairline); padding-block: var(--s-6); margin-top: var(--s-8); }
     .foot-inner { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-5); flex-wrap: wrap; }

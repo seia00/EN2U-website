@@ -108,6 +108,58 @@ export const strings = {
       mailLabel: 'Email',
     },
 
+    /* ---- /what-we-do ---- */
+    whatPage: {
+      title: 'What we do',
+      lead: 'We write English curricula in Japan and hand them to the people already teaching the students who need them.',
+      model: {
+        n: '01',
+        eyebrow: 'The model',
+        title: 'Materials travel further than teachers',
+        body: 'Direct remote teaching needs every student to have a device, a connection and a scheduled hour. That is the constraint we kept running into, and it is not one a volunteer organisation in Japan can fix. Curricula do not have that constraint. A partner who already has the students in a room can run our materials without us in the call.',
+      },
+      mentors: {
+        n: '02',
+        eyebrow: 'Who writes them',
+        title: 'The bar our mentors clear',
+        body: 'Our mentors are 13–18. The qualification they hold is not a school award — EIKEN Grade 1 is an adult certification, and most adults who sit it do not pass. Every person who writes or reviews a curriculum has cleared all three of the following.',
+        steps: [
+          { t: 'EIKEN Grade 1', b: 'Passed across reading, writing, listening and speaking. An adult-level certification with a pass rate in the low teens.', fill: '100%' },
+          { t: 'or TOEFL iBT 100+', b: 'The alternative route where EIKEN Grade 1 has not been taken.', fill: '100%' },
+          { t: 'Interview and demo lesson', b: 'A one-on-one interview plus a taught demo, assessed on communication and teaching ability — not just on the certificate.', fill: '100%' },
+        ],
+      },
+    },
+
+    /* ---- /impact ---- */
+    impactPage: {
+      title: 'Impact',
+      lead: 'What we have run, what it produced, and how the two partnerships differ.',
+      guat: {
+        n: '01',
+        eyebrow: 'Guatemala',
+        title: 'A year of weekly lessons',
+        role: 'We taught directly',
+        body: 'Working with an NPO partner, our mentors taught weekly for roughly a year — one hour per group, every week. We built image-first slides that worked over unreliable connections, opened with icebreakers to get students talking, and wrote feedback after each session.',
+        body2: 'This is the only programme where EN2U mentors were the ones teaching. Everything we learned about what survives a low-bandwidth classroom came from here, and it is what the curricula are built on.',
+        caption: 'A lesson in progress. Faces and names redacted.',
+      },
+      gaza: {
+        n: '02',
+        eyebrow: 'Gaza',
+        title: 'Curriculum supplied, partner delivered',
+        role: 'We supplied the curriculum',
+        body: 'We provided teaching materials to a partner in Gaza. They ran the sessions. We were not in the room and we did not run these classrooms — the distinction matters, and we would rather state it than let a reader assume otherwise.',
+        body2: 'Separately from this, we use our platform to amplify Gaza Soup Kitchen, a grassroots organisation providing hot meals across Gaza. That is solidarity work, not a teaching programme, and we count it as neither.',
+      },
+      method: {
+        n: '03',
+        eyebrow: 'Methodology',
+        title: 'How we count',
+        body: 'Hours are counted from scheduled sessions that ran. “Students reached” combines students our mentors taught directly with students taught by partners using our curricula — we do not separate the two because our partners report totals, not rosters. Where a figure is a floor rather than an exact count, it is written with a plus sign. We do not publish follower counts as impact.',
+      },
+    },
+
     footer: {
       tag: 'Youth-led nonprofit · Japan',
       rights: 'EN2U',
@@ -205,6 +257,58 @@ export const strings = {
       igLabel: 'Instagram',
       mail: 'en2u.org@gmail.com',
       mailLabel: 'メール',
+    },
+
+    /* ---- /ja/what-we-do ---- */
+    whatPage: {
+      title: '活動内容',
+      lead: '私たちは日本で英語カリキュラムを制作し、必要とする生徒とすでに向き合っている人たちに届けています。',
+      model: {
+        n: '01',
+        eyebrow: '仕組み',
+        title: '教材は、教師より遠くまで届く',
+        body: '遠隔での直接指導には、すべての生徒に端末と通信環境、そして決まった時間が必要です。私たちが繰り返し直面したのはこの制約であり、日本のボランティア団体が解決できるものではありませんでした。カリキュラムにはその制約がありません。すでに生徒が集まっている場所があれば、私たちが通話に参加しなくても教材を使うことができます。',
+      },
+      mentors: {
+        n: '02',
+        eyebrow: '制作するメンバー',
+        title: 'メンターが満たす基準',
+        body: '私たちのメンターは13〜18歳です。保持している資格は学内の表彰ではありません。英検1級は成人向けの資格であり、受験する成人の多くが合格しません。カリキュラムを制作・確認するメンバーは、全員が以下の3つをすべて満たしています。',
+        steps: [
+          { t: '英検1級', b: '読む・書く・聞く・話すのすべてに合格。合格率が1割台の成人向け資格です。', fill: '100%' },
+          { t: 'またはTOEFL iBT 100点以上', b: '英検1級を受験していない場合の代替基準です。', fill: '100%' },
+          { t: '面接・デモレッスン', b: '個別面接と模擬授業を実施し、資格だけでなくコミュニケーション能力と指導力を評価します。', fill: '100%' },
+        ],
+      },
+    },
+
+    /* ---- /ja/impact ---- */
+    impactPage: {
+      title: '活動実績',
+      lead: '実施したこと、その成果、そして2つのパートナーシップの違いについて。',
+      guat: {
+        n: '01',
+        eyebrow: 'グアテマラ',
+        title: '1年間の毎週のレッスン',
+        role: '直接指導',
+        body: 'NPOパートナーと連携し、約1年間にわたり毎週レッスンを実施しました。1グループにつき週1時間です。不安定な通信環境でも使える画像中心のスライドを制作し、アイスブレイクで生徒が話しやすい雰囲気をつくり、毎回のレッスン後にフィードバックを書きました。',
+        body2: 'EN2Uのメンターが自ら指導した唯一のプログラムです。通信環境が限られた教室で何が機能するのか、その知見はすべてここから得られたものであり、カリキュラムの土台になっています。',
+        caption: 'レッスンの様子。顔と名前は伏せています。',
+      },
+      gaza: {
+        n: '02',
+        eyebrow: 'ガザ',
+        title: 'カリキュラムを提供し、パートナーが実施',
+        role: 'カリキュラム提供',
+        body: 'ガザのパートナーに教材を提供し、実施はパートナーが担いました。私たちはその場にはおらず、教室を運営したわけでもありません。この区別は重要であり、読み手の解釈に委ねるのではなく、明記しておきたいと考えています。',
+        body2: 'これとは別に、ガザ全域で温かい食事を提供する草の根組織「ガザスープキッチン」の活動を、私たちのプラットフォームで発信しています。これは連帯の活動であり、教育プログラムではありません。実績としても数えていません。',
+      },
+      method: {
+        n: '03',
+        eyebrow: '算出方法',
+        title: '数字の数え方',
+        body: '指導時間は、実際に実施されたレッスンから算出しています。「届いた生徒数」は、メンターが直接指導した生徒と、私たちのカリキュラムを使ってパートナーが指導した生徒の合計です。パートナーからは名簿ではなく合計人数の報告を受けるため、両者を分けていません。正確な数ではなく下限値である場合は、プラス記号を付けて記載しています。フォロワー数を実績として掲載することはありません。',
+      },
     },
 
     footer: {

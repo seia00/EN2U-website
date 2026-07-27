@@ -1,22 +1,30 @@
 ---
 /**
  * EN2U mark — "Cradle" (option A).
- * Redrawn from pictures/logo.png, which could not be traced
- * (42,149 colours, woven patch texture, hand-lettered wordmark, 408px source).
+ *
+ * Redrawn from pictures/logo.png, which could not be traced (42,149 colours,
+ * woven patch texture, hand-lettered wordmark, 408px source).
+ *
+ * Geometry note: the hands wrap UP the sides of the globe with a gap at the
+ * bottom centre. An arc sitting *beneath* the globe reads as a smiley face at
+ * favicon size — the bottom gap and the raised shoulders are what stop that.
  *
  * Stroke-based with semantic per-path ids so the preloader can draw it on.
  * pathLength="1" normalises every path so one dashoffset value works for all.
+ * Draw order below is the order a human would draw it, not DOM convenience.
  */
 export interface Props {
   size?: number;
-  detail?: boolean;   // false = simplified form for <=24px
+  detail?: boolean;   // false = simplified form for <= 24px
   title?: string;
   class?: string;
+  id?: string;
 }
-const { size = 32, detail = true, title = 'EN2U', class: cls = '' } = Astro.props;
-const sw = size <= 24 ? 5 : size <= 32 ? 4 : size <= 64 ? 3.5 : 3;
+const { size = 32, detail = true, title = 'EN2U', class: cls = '', id } = Astro.props;
+const sw = size <= 24 ? 4.5 : size <= 32 ? 4 : size <= 64 ? 3.4 : 3;
 ---
 <svg
+  id={id}
   class={`en2u-mark ${cls}`}
   width={size} height={size} viewBox="0 0 64 64"
   role="img" aria-label={title}
@@ -24,10 +32,9 @@ const sw = size <= 24 ? 5 : size <= 32 ? 4 : size <= 64 ? 3.5 : 3;
   stroke-linecap="round" stroke-linejoin="round"
 >
   <title>{title}</title>
-  <circle id="m-globe"    pathLength="1" cx="32" cy="25" r="14.5" />
-  {detail && <path id="m-equator"  pathLength="1" d="M17.5 25H46.5" />}
-  {detail && <path id="m-meridian-l" pathLength="1" d="M32 10.5C24.8 15 24.8 35 32 39.5" />}
-  {detail && <path id="m-meridian-r" pathLength="1" d="M32 10.5C39.2 15 39.2 35 32 39.5" />}
-  <path id="m-hand-l" pathLength="1" d="M8 33.5C8.6 45.5 18 53.5 30.5 54" />
-  <path id="m-hand-r" pathLength="1" d="M56 33.5C55.4 45.5 46 53.5 33.5 54" />
+  <circle  class="m-path" data-draw="1" pathLength="1" cx="32" cy="25" r="13" />
+  {detail && <path    class="m-path" data-draw="2" pathLength="1" d="M19 25H45" />}
+  {detail && <ellipse class="m-path" data-draw="3" pathLength="1" cx="32" cy="25" rx="7" ry="13" />}
+  <path class="m-path" data-draw="4" pathLength="1" d="M28.38 50.75A26 26 0 0 1 6.89 18.27" />
+  <path class="m-path" data-draw="5" pathLength="1" d="M57.11 18.27A26 26 0 0 1 35.62 50.75" />
 </svg>

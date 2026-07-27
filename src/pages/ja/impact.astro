@@ -1,0 +1,9 @@
+---
+import { t } from '../../i18n/strings';
+import Base from '../../layouts/Base.astro';
+import Impact from '../../components/Impact.astro';
+const s = t('ja');
+---
+<Base pageTitle={s.impactPage.title} locale="ja" path="/impact">
+  <Impact locale="ja" />
+</Base>
