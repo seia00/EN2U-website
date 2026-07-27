@@ -34,8 +34,8 @@ const canonical = new URL(locale === 'ja' ? `/ja${path === '/' ? '' : path}` : p
     rel="stylesheet"
     href={
       locale === 'ja'
-        ? 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+JP:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap'
-        : 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap'
+        ? 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+JP:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap'
+        : 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap'
     }
   />
   <script is:inline>
@@ -53,10 +53,23 @@ const canonical = new URL(locale === 'ja' ? `/ja${path === '/' ? '' : path}` : p
         <Mark size={30} detail="compact" />
         <b>EN2U</b>
       </a>
-      <nav class="nav-links">
-        <a href={`${home === '/' ? '' : home}/what-we-do`} aria-current={path === '/what-we-do' ? 'page' : undefined}>{s.nav.what}</a>
-        <a href={`${home === '/' ? '' : home}/impact`} aria-current={path === '/impact' ? 'page' : undefined}>{s.nav.impact}</a>
-        <a href={other} class="lang" aria-label={s.nav.toggleLabel} data-lang-link>{s.nav.toggle}</a>
+      <nav class="nav-links" aria-label={locale === 'ja' ? 'メインナビゲーション' : 'Main'}>
+        <a class="nav-item" href={`${home === '/' ? '' : home}/what-we-do`}
+           aria-current={path === '/what-we-do' ? 'page' : undefined}>{s.nav.what}</a>
+        <a class="nav-item" href={`${home === '/' ? '' : home}/impact`}
+           aria-current={path === '/impact' ? 'page' : undefined}>{s.nav.impact}</a>
+
+        <!-- A language switch is a different kind of control from a destination,
+             so it is separated by a rule and shows BOTH states. Previously it was
+             the only boxed thing in the bar, which made the toggle read as the
+             primary button and the actual navigation read as grey caption text. -->
+        <span class="nav-sep" aria-hidden="true"></span>
+        <span class="langset" role="group" aria-label={s.nav.toggleLabel}>
+          <a href={locale === 'en' ? '/' : other} class={locale === 'en' ? 'on' : ''}
+             aria-current={locale === 'en' ? 'true' : undefined} data-lang-link>EN</a>
+          <a href={locale === 'ja' ? '/ja' : other} class={locale === 'ja' ? 'on' : ''}
+             aria-current={locale === 'ja' ? 'true' : undefined} data-lang-link>日本語</a>
+        </span>
       </nav>
     </div>
   </header>
@@ -97,10 +110,12 @@ const canonical = new URL(locale === 'ja' ? `/ja${path === '/' ? '' : path}` : p
       els.forEach(function (el) { io.observe(el); });
 
       /* Preserve scroll position across the locale toggle (§6). */
-      var link = document.querySelector('[data-lang-link]');
-      if (link) {
-        link.addEventListener('click', function () {
-          try { sessionStorage.setItem('en2u:y', String(window.scrollY)); } catch (_) {}
+      var links = document.querySelectorAll('[data-lang-link]');
+      if (links.length) {
+        links.forEach(function (link) {
+          link.addEventListener('click', function () {
+            try { sessionStorage.setItem('en2u:y', String(window.scrollY)); } catch (_) {}
+          });
         });
         try {
           var y = sessionStorage.getItem('en2u:y');
@@ -125,15 +140,63 @@ const canonical = new URL(locale === 'ja' ? `/ja${path === '/' ? '' : path}` : p
       padding-block: var(--s-3);
     }
     .brand { display: inline-flex; align-items: center; gap: var(--s-3); text-decoration: none; }
-    .brand b { font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.01em; }
-    .nav-links { display: flex; align-items: center; gap: var(--s-5); font-size: var(--t-meta); }
-    .nav-links a { color: var(--muted); text-decoration: none; transition: color var(--d-micro); }
-    .nav-links a:hover { color: var(--ink); }
-    .nav-links .lang {
-      color: var(--ink); border: 1px solid var(--hairline);
-      border-radius: var(--radius); padding: var(--s-1) var(--s-3);
+    .brand b {
+      font-family: var(--font-display);
+      font-size: 1.25rem; font-weight: 900; letter-spacing: -0.02em;
     }
-    .nav-links a[aria-current="page"] { color: var(--ink); }
+    .nav-links { display: flex; align-items: center; gap: var(--s-5); }
+
+    /* Destinations: ink, not grey, and each carries a persistent rule underneath
+       so it reads as something you can go to rather than a caption. */
+    .nav-item {
+      position: relative;
+      color: var(--ink); text-decoration: none;
+      font-size: 1rem; font-weight: 500;
+      padding-block: var(--s-2);
+    }
+    .nav-item::after {
+      content: ''; position: absolute; left: 0; right: 0; bottom: 0;
+      height: 2px; background: var(--ink); opacity: .2;
+      transition: opacity var(--d-micro) var(--ease-entrance),
+                  background-color var(--d-micro) var(--ease-entrance);
+    }
+    .nav-item:hover::after { opacity: .55; }
+    .nav-item[aria-current="page"]::after { background: var(--accent); opacity: 1; }
+
+    .nav-sep { width: 1px; height: 20px; background: var(--hairline); }
+
+    /* Segmented switch showing both languages, current one filled. A single
+       button labelled with the OTHER language is ambiguous — it never says
+       whether it names the current state or the destination. */
+    .langset {
+      display: inline-flex; align-items: stretch;
+      border: 1px solid var(--hairline); border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .langset a {
+      color: var(--muted); text-decoration: none;
+      font-size: var(--t-meta); font-weight: 500; line-height: 1;
+      padding: var(--s-2) var(--s-3);
+      transition: background-color var(--d-micro), color var(--d-micro);
+    }
+    .langset a:hover { background: var(--hairline); color: var(--ink); }
+    .langset a.on { background: var(--ink); color: var(--bg); }
+    .langset a.on:hover { background: var(--ink); color: var(--bg); }
+
+    /* Nav labels must never break. Without this the global
+       :lang(ja) { overflow-wrap: anywhere } rule — which exists for body copy —
+       splits them mid-word at narrow widths (EN2 / U, 活動内 / 容). */
+    .brand b, .nav-item, .langset a { white-space: nowrap; overflow-wrap: normal; }
+
+    @media (max-width: 620px) {
+      .nav-links { gap: var(--s-3); }
+      .nav-item { font-size: 0.9375rem; }
+      /* The wordmark is the first thing to go: the mark alone still identifies
+         the site, and 375px cannot fit brand + two destinations + two languages. */
+      .brand b { display: none; }
+      .nav-sep { display: none; }
+      .langset a { padding: var(--s-2); }
+    }
 
     .site-footer { border-top: 1px solid var(--hairline); padding-block: var(--s-6); margin-top: var(--s-8); }
     .foot-inner { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-5); flex-wrap: wrap; }

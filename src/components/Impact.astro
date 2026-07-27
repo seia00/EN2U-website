@@ -33,7 +33,7 @@ const p = s.impactPage;
 <section class="section" id="guatemala">
   <div class="wrap">
     <p class="eyebrow" data-reveal><span class="n">{p.guat.n}</span> {p.guat.eyebrow}</p>
-    <div class="grid-2 prog">
+    <div class="prog prog--solo">
       <div>
         <div class="prog-head" data-reveal>
           <h2 class="title">{p.guat.title}</h2>
@@ -42,16 +42,23 @@ const p = s.impactPage;
         <p class="body prog-p" data-reveal style="--i:1">{p.guat.body}</p>
         <p class="body prog-p" data-reveal style="--i:2">{p.guat.body2}</p>
       </div>
-      <figure class="shot" data-reveal style="--i:1">
-        <img
-          src="/pictures/guatemala-class.jpg"
-          alt={p.guat.caption}
-          width="1400" height="822" loading="lazy" decoding="async"
-        />
-        <figcaption class="meta">{p.guat.caption}</figcaption>
-      </figure>
     </div>
   </div>
+
+  <!-- The photo is the only real evidence on the page, so it gets its own full
+       band rather than sharing a column with the copy. Wider than the text
+       measure, and offset from the section rhythm so it reads as a document
+       rather than a card. -->
+  <figure class="shot" data-reveal>
+    <div class="shot-frame">
+      <img
+        src="/pictures/guatemala-class.jpg"
+        alt={p.guat.caption}
+        width="1400" height="822" loading="lazy" decoding="async"
+      />
+    </div>
+    <figcaption class="meta">{p.guat.caption}</figcaption>
+  </figure>
 </section>
 
 <!-- Gaza — curriculum supplied, partner delivered. Deliberately no photography:
@@ -108,11 +115,20 @@ const p = s.impactPage;
     padding: 1px var(--s-2); white-space: nowrap;
   }
 
-  .shot img {
-    width: 100%; height: auto; border-radius: var(--radius);
-    border: 1px solid var(--hairline);
+  .prog--solo { display: block; }
+  .prog--solo .prog-p { max-width: var(--measure); }
+
+  .shot {
+    width: min(1240px, 94vw);
+    margin: var(--s-8) auto 0;
+    padding-inline: var(--gutter);
   }
-  .shot figcaption { margin-top: var(--s-3); }
+  .shot-frame {
+    border-radius: var(--radius); overflow: hidden;
+    border: 1px solid var(--hairline); background: var(--surface);
+  }
+  .shot img { width: 100%; height: auto; display: block; }
+  .shot figcaption { margin-top: var(--s-4); max-width: 60ch; }
 
   /* Small honest diagram: EN2U -> partner -> students. We are not in row two. */
   .relation {

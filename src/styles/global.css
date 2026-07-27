@@ -47,20 +47,28 @@ a { color: inherit; }
    Type — 5 sizes, no more
    ========================================================================== */
 .display {
-  font-size: var(--t-display); font-weight: 600;
-  line-height: var(--lh-tight); text-wrap: balance;
+  font-family: var(--font-display);
+  font-size: var(--t-display); font-weight: 900;
+  line-height: 1.04; text-wrap: balance;
 }
-.title { font-size: var(--t-title); font-weight: 600; line-height: 1.2; text-wrap: balance; }
+.title {
+  font-family: var(--font-display);
+  font-size: var(--t-title); font-weight: 700;
+  line-height: 1.18; text-wrap: balance;
+}
+/* Zen Kaku's Latin is wide at heavy weights; JP is not, and must never be
+   negatively tracked (§6). */
+:lang(en) .display { letter-spacing: -0.03em; }
+:lang(en) .title   { letter-spacing: -0.02em; }
+:lang(ja) .display, :lang(ja) .title { letter-spacing: normal; font-weight: 900; }
 .lead  { font-size: var(--t-lead); color: var(--muted); max-width: 52ch; }
 .body  { font-size: var(--t-body); max-width: var(--measure); }
 .meta  { font-size: var(--t-meta); color: var(--muted); }
 
-:lang(en) .display, :lang(en) .title { letter-spacing: -0.02em; }
-
 .eyebrow {
   font-family: var(--font-mono); font-size: var(--t-meta);
   letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--muted); margin-bottom: var(--s-4);
+  color: var(--muted); margin-bottom: var(--s-5);
   display: flex; align-items: baseline; gap: var(--s-3);
 }
 .eyebrow .n { color: var(--accent); }
@@ -108,7 +116,7 @@ a { color: inherit; }
 
 /* --- the threshold rule: SIGNATURE ELEMENT --- */
 .threshold .th-value {
-  font-family: var(--font-mono); font-size: var(--t-title);
+  font-family: var(--font-mono); font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
   font-weight: 500; line-height: 1; font-feature-settings: 'tnum' 1;
 }
 .threshold .th-label { font-size: var(--t-meta); margin-top: var(--s-2); }
@@ -132,17 +140,17 @@ a { color: inherit; }
   background: var(--surface);
   border: 1px solid var(--hairline);
   border-radius: var(--radius);
-  padding: var(--s-5);
+  padding: var(--s-6);
 }
-.card h3 { font-size: var(--t-body); font-weight: 600; margin-bottom: var(--s-2); }
+.card h3 { font-family: var(--font-display); font-size: 1.125rem; font-weight: 700; margin-bottom: var(--s-3); }
 .card p  { font-size: var(--t-meta); color: var(--muted); }
 
 /* --- button --- */
 .btn {
-  display: inline-block; padding: var(--s-3) var(--s-5);
+  display: inline-block; padding: var(--s-4) var(--s-6);
   background: var(--accent); color: var(--bg);
   border: 1px solid var(--accent); border-radius: var(--radius);
-  text-decoration: none; font-size: var(--t-meta); font-weight: 600;
+  text-decoration: none; font-size: var(--t-body); font-weight: 600;
   transition: opacity var(--d-micro) var(--ease-entrance);
 }
 .btn:hover { opacity: .88; }
