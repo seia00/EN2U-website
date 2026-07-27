@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import Logo from '../components/Logo.astro';
+import Mark from '../components/Mark.astro';
 import { t, altPath, type Locale } from '../i18n/strings';
 
 export interface Props { locale: Locale; path?: string; pageTitle?: string; }
@@ -50,7 +50,7 @@ const canonical = new URL(locale === 'ja' ? `/ja${path === '/' ? '' : path}` : p
   <header class="site-nav">
     <div class="wrap nav-inner">
       <a href={home} class="brand" aria-label="EN2U">
-        <Logo size={28} detail={false} />
+        <Mark size={30} detail="compact" />
         <b>EN2U</b>
       </a>
       <nav class="nav-links">

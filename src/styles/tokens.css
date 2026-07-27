@@ -64,6 +64,30 @@
   --hairline: rgb(22 35 58 / 14%);
 }
 
+/* ---- Brand mark colours --------------------------------------------------
+   Sampled directly from the original Instagram logo (brand/source/logo-original.png)
+   so the site mark and the social avatar read as the same identity.
+   These belong to the LOGO, not the UI theme — never use them for interface
+   colour. The UI accent stays --accent.
+   -------------------------------------------------------------------------- */
+:root {
+  --brand-ocean: #2E7BC0;
+  --brand-land:  #48A848;
+  --brand-hand:  #EFC79B;
+  --brand-line:  #16233A;
+
+  /* rainbow ring, clockwise from 12 o'clock */
+  --rb-1: #6639AE;  /* purple  */
+  --rb-2: #B43B9A;  /* magenta */
+  --rb-3: #D3634F;  /* red     */
+  --rb-4: #E49B3D;  /* orange  */
+  --rb-5: #F5CA47;  /* yellow  */
+  --rb-6: #7FB350;  /* green   */
+  --rb-7: #35908F;  /* teal    */
+  --rb-8: #2C69AC;  /* blue    */
+  --rb-9: #3F2D99;  /* indigo  */
+}
+
 :root {
   /* ---- Type ------------------------------------------------------------ */
   --font-sans: 'IBM Plex Sans', 'IBM Plex Sans JP', system-ui, sans-serif;

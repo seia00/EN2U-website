@@ -1,0 +1,116 @@
+---
+/**
+ * EN2U mark — full colour, carried over from the Instagram logo.
+ *
+ * Structure, concentric on (32,32):
+ *   r=29  rainbow ring   — 8 arc segments, each a linearGradient blending into
+ *                          the next hue, which approximates a conic gradient
+ *                          (SVG has no native conic). Clockwise from 12: purple,
+ *                          magenta, red, orange, yellow, green, teal, blue, indigo.
+ *   r=21  cradle arcs    — the two "hands", gaps at top and bottom
+ *   r=11  planet         — ocean fill, land masses, graticule
+ *
+ * Detail levels, because a rainbow ring plus continents is mush below ~28px:
+ *   'full'   hero / preloader — everything
+ *   'compact' nav (24–48px)   — ring, plain ocean planet, one graticule, arcs
+ *   'micro'  favicon (<=20px) — ring and planet only
+ *
+ * Gradient ids are suffixed per instance; duplicate ids across two marks on one
+ * page would make the second one inherit the first's gradients.
+ */
+export interface Props {
+  size?: number;
+  detail?: 'full' | 'compact' | 'micro';
+  title?: string;
+  class?: string;
+  decorative?: boolean;
+}
+const {
+  size = 32, detail = 'full', title = 'EN2U', class: cls = '', decorative = false,
+} = Astro.props;
+
+const uid = Math.random().toString(36).slice(2, 8);
+const R = 29;
+const C = 32;
+const pt = (deg: number, r = R) => {
+  const a = (deg * Math.PI) / 180;
+  return [C + r * Math.sin(a), C - r * Math.cos(a)].map((n) => +n.toFixed(3));
+};
+/* 8 segments x 45deg, clockwise from 12 o'clock */
+const stops = ['--rb-1','--rb-2','--rb-3','--rb-4','--rb-5','--rb-6','--rb-7','--rb-8','--rb-9'];
+/* Segments overlap by 0.6deg at each join and use butt caps. Round caps on
+   abutting arcs pile up at the seams and show as dark pips on the ring. */
+const OVER = 0.6;
+const segs = Array.from({ length: 8 }, (_, i) => {
+  const [x1, y1] = pt(i * 45 - OVER);
+  const [x2, y2] = pt((i + 1) * 45 + OVER);
+  return { id: `rb-${uid}-${i}`, x1, y1, x2, y2, from: stops[i], to: stops[i + 1] };
+});
+
+const ringW   = detail === 'micro' ? 5 : detail === 'compact' ? 4 : 3.2;
+const planetR = detail === 'micro' ? 13 : 15;
+const armW  = detail === 'compact' ? 3.6 : 3;
+---
+<svg
+  class={`en2u-mark ${cls}`}
+  width={size} height={size} viewBox="0 0 64 64"
+  role={decorative ? 'presentation' : 'img'}
+  aria-label={decorative ? undefined : title}
+  aria-hidden={decorative ? 'true' : undefined}
+  xmlns="http://www.w3.org/2000/svg"
+>
+  {!decorative && <title>{title}</title>}
+  <defs>
+    {segs.map((s) => (
+      <linearGradient id={s.id} gradientUnits="userSpaceOnUse" x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2}>
+        <stop offset="0" stop-color={`var(${s.from})`} />
+        <stop offset="1" stop-color={`var(${s.to})`} />
+      </linearGradient>
+    ))}
+    <clipPath id={`globe-${uid}`}><circle cx="32" cy="32" r={planetR} /></clipPath>
+  </defs>
+
+  <!-- rainbow ring -->
+  <g class="mk-ring" fill="none" stroke-width={ringW} stroke-linecap="butt">
+    {segs.map((s) => (
+      <path class="mk-seg" pathLength="1" stroke={`url(#${s.id})`} d={`M${s.x1} ${s.y1}A${R} ${R} 0 0 1 ${s.x2} ${s.y2}`} />
+    ))}
+  </g>
+
+  <!-- cradle arcs: the hands. Drawn before the planet so the planet overlaps
+       them, the way the hands sit behind the globe in the original. Each arc is
+       stroked twice — dark liner under peach — which is what gives the original
+       its definition and what keeps these legible at nav size. -->
+  {detail !== 'micro' && (
+    <g class="mk-arms" fill="none" stroke-linecap="round">
+      <g stroke="var(--brand-line)" stroke-width={armW + 1.7}>
+        <path class="mk-arm-r" pathLength="1" d="M40.18 12.98A22 22 0 0 1 40.18 51.02" />
+        <path class="mk-arm-l" pathLength="1" d="M23.82 51.02A22 22 0 0 1 23.82 12.98" />
+      </g>
+      <g stroke="var(--brand-hand)" stroke-width={armW}>
+        <path class="mk-arm-r" pathLength="1" d="M40.18 12.98A22 22 0 0 1 40.18 51.02" />
+        <path class="mk-arm-l" pathLength="1" d="M23.82 51.02A22 22 0 0 1 23.82 12.98" />
+      </g>
+    </g>
+  )}
+
+  <!-- planet -->
+  <circle class="mk-planet-edge" cx="32" cy="32" r={planetR + 1.1} fill="var(--brand-line)" />
+  <g class="mk-planet" clip-path={`url(#globe-${uid})`}>
+    <circle cx="32" cy="32" r={planetR} fill="var(--brand-ocean)" />
+    {detail !== 'micro' && (
+      <g fill="var(--brand-land)">
+        <!-- Americas -->
+        <path d="M24.2 19.8c2.6.6 3.6 3 2.4 5-1.1 1.9-.4 3.3 1.2 4.2 1.9 1.1 1.6 4.3-.2 6.6-1.5 1.9-1.4 4.4-2.9 5.6-1.8 1.4-4.2-.3-4.6-3-.5-3.6-1-8.2-.4-12 .4-2.8 2.2-7.1 4.5-6.4Z" />
+        <!-- Eurasia + Africa -->
+        <path d="M35.4 19.6c4.6-1 9.6 1.4 10.8 4.6 1 2.7-2 4.2-4.6 4.1-2.4-.1-3.9 1.7-3.1 4.4.9 3.1-.6 7.1-2.7 8.7-2 1.5-4.2-.4-4.4-3.4-.2-3.4.6-6.6.2-9.7-.4-3.3-.2-8.1 3.8-8.7Z" />
+        <!-- Oceania -->
+        <path d="M41.6 36.4c2-.7 4 .8 3.9 2.9-.1 2-2 3.5-3.9 3-1.7-.4-2.5-2.3-1.9-4 .3-.9.9-1.6 1.9-1.9Z" />
+      </g>
+    )}
+    <g fill="none" stroke="var(--brand-line)" stroke-opacity=".34" stroke-width="1">
+      <path d={`M${32 - planetR} 32h${planetR * 2}`} />
+      {detail === 'full' && <ellipse cx="32" cy="32" rx={planetR * 0.52} ry={planetR} />}
+    </g>
+  </g>
+</svg>

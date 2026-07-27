@@ -1,0 +1,49 @@
+---
+import Mark from '../components/Mark.astro';
+import '../styles/global.css';
+const sizes = [200, 96, 64, 48, 32, 24, 16];
+---
+<html lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mark preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="wrap" style="padding-block:40px">
+    <h1 class="title">Mark — full colour</h1>
+
+    <h2 class="meta" style="margin:32px 0 12px">detail="full"</h2>
+    <div class="row">{sizes.map(s => <div class="cell"><Mark size={s} detail="full" /><span class="n">{s}</span></div>)}</div>
+
+    <h2 class="meta" style="margin:32px 0 12px">detail="compact" (nav)</h2>
+    <div class="row">{sizes.map(s => <div class="cell"><Mark size={s} detail="compact" /><span class="n">{s}</span></div>)}</div>
+
+    <h2 class="meta" style="margin:32px 0 12px">detail="micro" (favicon)</h2>
+    <div class="row">{sizes.map(s => <div class="cell"><Mark size={s} detail="micro" /><span class="n">{s}</span></div>)}</div>
+
+    <h2 class="meta" style="margin:32px 0 12px">on ink</h2>
+    <div class="row dark">{[200,64,32,16].map(s => <div class="cell"><Mark size={s} detail={s>=32?'full':'micro'} /><span class="n">{s}</span></div>)}</div>
+
+    <h2 class="meta" style="margin:32px 0 12px">nav lockup</h2>
+    <div class="navbar">
+      <span style="display:inline-flex;align-items:center;gap:12px">
+        <Mark size={30} detail="compact" />
+        <b style="font-size:17px;font-weight:600">EN2U</b>
+      </span>
+    </div>
+  </div>
+  <style>
+    .row { display:flex; align-items:flex-end; gap:28px; flex-wrap:wrap;
+           background:var(--surface); border:1px solid var(--hairline);
+           border-radius:var(--radius); padding:24px; }
+    .row.dark { background:var(--ink); }
+    .cell { display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .n { font-family:var(--font-mono); font-size:10px; color:var(--muted); }
+    .row.dark .n { color:#9AA5B5; }
+    .navbar { background:var(--surface); border:1px solid var(--hairline);
+              border-radius:var(--radius); padding:14px 20px; }
+  </style>
+</body>
+</html>

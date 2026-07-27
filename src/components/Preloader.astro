@@ -1,5 +1,5 @@
 ---
-import Logo from './Logo.astro';
+import Mark from './Mark.astro';
 /**
  * Logo draw-on preloader. Home route only.
  *
@@ -22,7 +22,7 @@ import Logo from './Logo.astro';
  */
 ---
 <div id="preloader" class="pre" aria-hidden="true" data-preloader>
-  <Logo size={120} class="pre-mark" />
+  <Mark size={132} detail="full" class="pre-mark" decorative />
 </div>
 
 <script is:inline>
@@ -79,18 +79,41 @@ import Logo from './Logo.astro';
   .pre:not(.pre--run) { display: none; }
   .pre-lock { overflow: hidden; }
 
-  .pre--run .m-path {
+  /* 1. the rainbow ring draws itself clockwise from 12 o'clock */
+  .pre--run .mk-seg {
     stroke-dasharray: 1;
     stroke-dashoffset: 1;
-    animation: preDraw 640ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: preDraw 300ms linear forwards;
   }
-  .pre--run .m-path[data-draw="1"] { animation-delay:   0ms; }
-  .pre--run .m-path[data-draw="2"] { animation-delay:  80ms; }
-  .pre--run .m-path[data-draw="3"] { animation-delay: 160ms; }
-  .pre--run .m-path[data-draw="4"] { animation-delay: 280ms; }
-  .pre--run .m-path[data-draw="5"] { animation-delay: 400ms; }
+  .pre--run .mk-seg:nth-child(1) { animation-delay:   0ms; }
+  .pre--run .mk-seg:nth-child(2) { animation-delay:  60ms; }
+  .pre--run .mk-seg:nth-child(3) { animation-delay: 120ms; }
+  .pre--run .mk-seg:nth-child(4) { animation-delay: 180ms; }
+  .pre--run .mk-seg:nth-child(5) { animation-delay: 240ms; }
+  .pre--run .mk-seg:nth-child(6) { animation-delay: 300ms; }
+  .pre--run .mk-seg:nth-child(7) { animation-delay: 360ms; }
+  .pre--run .mk-seg:nth-child(8) { animation-delay: 420ms; }
 
-  @keyframes preDraw { to { stroke-dashoffset: 0; } }
+  /* 2. the hands close around it */
+  .pre--run .mk-arm-l,
+  .pre--run .mk-arm-r {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: preDraw 420ms cubic-bezier(0.16, 1, 0.3, 1) 480ms forwards;
+  }
+
+  /* 3. the planet settles in behind them */
+  .pre--run .mk-planet,
+  .pre--run .mk-planet-edge {
+    transform-box: view-box;
+    transform-origin: 32px 32px;
+    opacity: 0;
+    transform: scale(0.72);
+    animation: prePlanet 420ms cubic-bezier(0.16, 1, 0.3, 1) 700ms forwards;
+  }
+
+  @keyframes preDraw   { to { stroke-dashoffset: 0; } }
+  @keyframes prePlanet { to { opacity: 1; transform: scale(1); } }
 
   .pre--run { animation: preOut 340ms cubic-bezier(0.7, 0, 0.84, 0) 1250ms forwards; }
   @keyframes preOut { to { opacity: 0; visibility: hidden; } }
