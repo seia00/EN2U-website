@@ -50,14 +50,14 @@ const canonical = new URL(locale === 'ja' ? `/ja${path === '/' ? '' : path}` : p
   <header class="site-nav">
     <div class="wrap nav-inner">
       <a href={home} class="brand" aria-label="EN2U">
-        <Mark size={30} detail="compact" />
+        <Mark size={30} detail="compact" spin />
         <b>EN2U</b>
       </a>
       <nav class="nav-links" aria-label={locale === 'ja' ? 'メインナビゲーション' : 'Main'}>
-        <a class="nav-item" href={`${home === '/' ? '' : home}/what-we-do`}
-           aria-current={path === '/what-we-do' ? 'page' : undefined}>{s.nav.what}</a>
-        <a class="nav-item" href={`${home === '/' ? '' : home}/impact`}
-           aria-current={path === '/impact' ? 'page' : undefined}>{s.nav.impact}</a>
+        <!-- One-page site: these are in-page anchors. The scroll-spy script below
+             marks whichever section is on screen with aria-current. -->
+        <a class="nav-item" href={`${home}#what`} data-spy="what">{s.nav.what}</a>
+        <a class="nav-item" href={`${home}#impact`} data-spy="impact">{s.nav.impact}</a>
 
         <!-- A language switch is a different kind of control from a destination,
              so it is separated by a rule and shows BOTH states. Previously it was
@@ -109,6 +109,26 @@ const canonical = new URL(locale === 'ja' ? `/ja${path === '/' ? '' : path}` : p
       }, { threshold: 0.15, rootMargin: '0px 0px -5% 0px' });
       els.forEach(function (el) { io.observe(el); });
 
+      /* Scroll-spy: mark the nav item whose section crosses a thin band at the
+         middle of the viewport. Sections are contiguous, so at most one is lit;
+         the hero, "where we work" and contact light nothing. */
+      var spy = document.querySelectorAll('[data-spy]');
+      var spied = {};
+      spy.forEach(function (a) {
+        var id = a.getAttribute('data-spy');
+        var sec = document.getElementById(id);
+        if (sec) spied[id] = a;
+      });
+      var spyIo = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          var link = spied[e.target.id];
+          if (!link) return;
+          if (e.isIntersecting) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        });
+      }, { rootMargin: '-45% 0px -50% 0px' });
+      Object.keys(spied).forEach(function (id) { spyIo.observe(document.getElementById(id)); });
+
       /* Preserve scroll position across the locale toggle (§6). */
       var links = document.querySelectorAll('[data-lang-link]');
       if (links.length) {
@@ -129,15 +149,18 @@ const canonical = new URL(locale === 'ja' ? `/ja${path === '/' ? '' : path}` : p
   </script>
 
   <style is:global>
+    /* Height is fixed (border-box, so the hairline is inside it): the hero is
+       100svh minus exactly this, and anchor jumps scroll-pad by it. */
     .site-nav {
       position: sticky; top: 0; z-index: 50;
+      height: var(--nav-h);
       background: color-mix(in srgb, var(--bg) 88%, transparent);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--hairline);
     }
     .nav-inner {
+      height: 100%;
       display: flex; align-items: center; justify-content: space-between;
-      padding-block: var(--s-3);
     }
     .brand { display: inline-flex; align-items: center; gap: var(--s-3); text-decoration: none; }
     .brand b {
@@ -161,7 +184,7 @@ const canonical = new URL(locale === 'ja' ? `/ja${path === '/' ? '' : path}` : p
                   background-color var(--d-micro) var(--ease-entrance);
     }
     .nav-item:hover::after { opacity: .55; }
-    .nav-item[aria-current="page"]::after { background: var(--accent); opacity: 1; }
+    .nav-item[aria-current]::after { background: var(--accent); opacity: 1; }
 
     .nav-sep { width: 1px; height: 20px; background: var(--hairline); }
 

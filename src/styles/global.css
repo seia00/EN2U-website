@@ -5,7 +5,13 @@
    ========================================================================== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  /* One-page site: nav links are in-page anchors under a sticky bar.
+     (tokens.css turns smooth scrolling off for prefers-reduced-motion.) */
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-h);
+}
 
 body {
   background: var(--bg);
@@ -155,6 +161,20 @@ a { color: inherit; }
 }
 .btn:hover { opacity: .88; }
 .btn-ghost { background: transparent; color: var(--ink); border-color: var(--hairline); }
+
+/* --- section scaffolding shared by every home-page section --- */
+.head-grid { align-items: start; margin-bottom: var(--s-7); }
+
+/* A sub-topic inside a numbered section (mentors, Guatemala, Gaza, method). */
+.block { margin-top: var(--s-9); padding-top: var(--s-7); border-top: 1px solid var(--hairline); }
+
+/* Role chip: how we relate to a place or programme. */
+.node-role {
+  font-family: var(--font-mono); font-size: 0.75rem;
+  letter-spacing: 0.04em; color: var(--accent);
+  border: 1px solid var(--hairline); border-radius: var(--radius);
+  padding: 1px var(--s-2); white-space: nowrap;
+}
 
 /* --- grids --- */
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5); }

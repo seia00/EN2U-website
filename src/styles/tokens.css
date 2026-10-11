@@ -118,6 +118,9 @@
   --section-y: clamp(80px, 12vw, 168px);
   --gutter:    clamp(24px, 5vw, 56px);
   --maxw: 1140px;
+  /* Fixed, not content-sized: the hero is `100svh - --nav-h`, and anchor jumps
+     use it as scroll offset, so it has to be a known number in both locales. */
+  --nav-h: 60px;
 
   /* ---- Radius — one value, no exceptions ------------------------------- */
   --radius: 4px;

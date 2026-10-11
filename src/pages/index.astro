@@ -12,16 +12,17 @@ import Preloader from '../components/Preloader.astro';
   /* Legacy anchor forwarding.
      A URL fragment is never sent to the server, so no vercel.json redirect can
      see #purpose or #lessons — this has to happen client-side. Runs only when
-     an old fragment is actually present. */
+     an old fragment is actually present. Everything now lives on this page, so
+     the old fragments just point at the sections that absorbed them. */
   (function () {
     var map = {
-      '#purpose':  '/what-we-do',
-      '#lessons':  '/what-we-do',
-      '#whatwedo': '/what-we-do',
-      '#past':     '/impact'
+      '#purpose':  '#what',
+      '#lessons':  '#what',
+      '#whatwedo': '#what',
+      '#past':     '#impact'
       /* #contact still exists on this page, so it is deliberately not mapped. */
     };
     var to = map[window.location.hash];
-    if (to) window.location.replace(to);
+    if (to) window.location.replace(window.location.pathname + to);
   })();
 </script>

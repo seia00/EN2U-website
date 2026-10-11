@@ -1,0 +1,122 @@
+---
+import { t, type Locale } from '../i18n/strings';
+export interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const s = t(locale);
+const p = s.impact;
+---
+{/* ── 03 IMPACT ───────────────────────────────────────────────────────────
+     Numbers first, then the two programmes behind them, then how they were
+     counted. (This used to be its own /impact page.) */}
+<section class="section" id="impact">
+  <div class="wrap">
+    <p class="eyebrow" data-reveal><span class="n">{p.n}</span> {p.eyebrow}</p>
+    <div class="grid-2 head-grid">
+      <h2 class="title" data-reveal>{p.title}</h2>
+      <p class="body" data-reveal style="--i:1">{p.note}</p>
+    </div>
+
+    <p class="meta stats-head" data-reveal>{p.statsHead}</p>
+    <div class="grid-3 stats" data-stagger>
+      {p.stats.map((st, i) => (
+        <div class="threshold" data-reveal style={`--fill:${st.fill}; --i:${i}`}>
+          <div class="th-value">{st.v}</div>
+          <div class="th-label">{st.l}</div>
+          <div class="th-rule"><i></i></div>
+          <div class="th-note">{st.n}</div>
+        </div>
+      ))}
+    </div>
+
+    {/* Guatemala — the direct-teaching programme. */}
+    <div class="block" id="guatemala">
+      <p class="eyebrow" data-reveal>{p.guat.eyebrow}</p>
+      <div class="prog-head" data-reveal>
+        <h3 class="title">{p.guat.title}</h3>
+        <span class="node-role">{p.guat.role}</span>
+      </div>
+      <p class="body prog-p" data-reveal style="--i:1">{p.guat.body}</p>
+      <p class="body prog-p" data-reveal style="--i:2">{p.guat.body2}</p>
+
+      {/* The photo is the only real evidence on the page, so it gets the full
+           width of the column rather than sharing it with the copy. */}
+      <figure class="shot" data-reveal>
+        <div class="shot-frame">
+          <img
+            src="/pictures/guatemala-class.jpg"
+            alt={p.guat.caption}
+            width="1400" height="822" loading="lazy" decoding="async"
+          />
+        </div>
+        <figcaption class="meta">{p.guat.caption}</figcaption>
+      </figure>
+    </div>
+
+    {/* Gaza — curriculum supplied, partner delivered. Deliberately no photography:
+         the previous asset was a third-party collage containing an Arabic teaching
+         flashcard, which implied we taught there. Typographic treatment instead. */}
+    <div class="block" id="gaza">
+      <p class="eyebrow" data-reveal>{p.gaza.eyebrow}</p>
+      <div class="grid-2 prog">
+        <div>
+          <div class="prog-head" data-reveal>
+            <h3 class="title">{p.gaza.title}</h3>
+            <span class="node-role">{p.gaza.role}</span>
+          </div>
+          <p class="body prog-p" data-reveal style="--i:1">{p.gaza.body}</p>
+          <p class="body prog-p" data-reveal style="--i:2">{p.gaza.body2}</p>
+        </div>
+        <div class="relation" data-reveal style="--i:1" aria-hidden="true">
+          <div class="rel-row"><span class="rel-a">EN2U</span><span class="rel-line"></span><span class="rel-b">Partner</span></div>
+          <p class="rel-cap meta">curriculum →</p>
+          <div class="rel-row"><span class="rel-a rel-dim">Partner</span><span class="rel-line"></span><span class="rel-b rel-dim">Students</span></div>
+          <p class="rel-cap meta">teaching →</p>
+        </div>
+      </div>
+    </div>
+
+    {/* Methodology — how the numbers were counted. */}
+    <div class="block" id="method">
+      <p class="eyebrow" data-reveal>{p.method.eyebrow}</p>
+      <div class="grid-2 head-grid method-grid">
+        <h3 class="title" data-reveal>{p.method.title}</h3>
+        <p class="body" data-reveal style="--i:1">{p.method.body}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stats { margin-top: var(--s-5); }
+  .stats-head { margin-bottom: var(--s-2); }
+
+  .prog { align-items: start; }
+  .prog-head { display: flex; align-items: baseline; gap: var(--s-3); flex-wrap: wrap; margin-bottom: var(--s-5); }
+  .prog-p { max-width: var(--measure); }
+  .prog-p + .prog-p { margin-top: var(--s-4); }
+  .method-grid { margin-bottom: 0; }
+
+  .shot { margin-top: var(--s-7); }
+  .shot-frame {
+    border-radius: var(--radius); overflow: hidden;
+    border: 1px solid var(--hairline); background: var(--surface);
+  }
+  .shot img { width: 100%; height: auto; display: block; }
+  .shot figcaption { margin-top: var(--s-4); max-width: 60ch; }
+
+  /* Small honest diagram: EN2U -> partner -> students. We are not in row two. */
+  .relation {
+    background: var(--surface); border: 1px solid var(--hairline);
+    border-radius: var(--radius); padding: var(--s-5);
+  }
+  .rel-row { display: flex; align-items: center; gap: var(--s-3); }
+  .rel-a, .rel-b {
+    font-family: var(--font-mono); font-size: var(--t-meta);
+    border: 1px solid var(--hairline); border-radius: var(--radius);
+    padding: var(--s-2) var(--s-3); background: var(--bg); white-space: nowrap;
+  }
+  .rel-dim { color: var(--muted); }
+  .rel-line { flex: 1; height: 1px; background: var(--accent); }
+  .rel-cap { margin: var(--s-2) 0 var(--s-4); font-family: var(--font-mono); }
+  .rel-cap:last-child { margin-bottom: 0; }
+</style>

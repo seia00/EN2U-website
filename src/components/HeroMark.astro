@@ -1,23 +1,12 @@
 ---
 import Mark from './Mark.astro';
 /**
- * Large brand mark for the hero's empty right column.
- *
- * Motion: everything turns the same way and never reverses. The rainbow ring
- * rotates at 60s; the two hands rotate together as one rigid group at 34s, so
- * the gap between them is fixed; the planet stays still. The speed difference
- * is what gives it depth.
- *
- * Deliberately not a spin of the whole mark — at spin speed a ringed circular
- * logo reads as a loading spinner. To do that anyway: put `orbit 20s linear
- * infinite` on `.hero-mark :global(svg)` and delete the two rules below.
- *
- * Styles reach into Mark's internals, so they need :global — Astro scopes
- * component CSS to the component that declares it.
+ * Large brand mark for the hero's empty right column. The idle motion lives in
+ * Mark (`spin`) so the nav logo can share it; this file only places the mark.
  */
 ---
 <div class="hero-mark" aria-hidden="true">
-  <Mark size={360} detail="full" decorative />
+  <Mark size={360} detail="full" decorative spin />
 </div>
 
 <style>
@@ -27,31 +16,11 @@ import Mark from './Mark.astro';
     width: clamp(210px, 25vw, 340px);
     pointer-events: none;
   }
+  /* Styles reach into Mark's svg, so they need :global — Astro scopes component
+     CSS to the component that declares it. */
   .hero-mark :global(svg) { width: 100%; height: auto; }
 
-  .hero-mark :global(.mk-ring),
-  .hero-mark :global(.mk-arms) {
-    transform-box: view-box;
-    transform-origin: 32px 32px;
-  }
-  /* The hands rotate as ONE rigid group, so their spacing never changes and
-     nothing can appear to reverse. Counter-rotating them (the previous 28s
-     forward / 36s reverse) made the pair repeatedly close and open, which reads
-     as bouncing even though each arc was individually travelling one way.
-     Ring and hands now share a direction and differ only in speed — parallax,
-     no convergence beat. */
-  .hero-mark :global(.mk-ring) { animation: orbit 60s linear infinite; }
-  .hero-mark :global(.mk-arms) { animation: orbit 34s linear infinite; }
-
-  @keyframes orbit { to { transform: rotate(360deg); } }
-
   /* Below the 2-column breakpoint the hero is text-only — a mark stacked above
-     the headline would push the LCP element down the page, and a forever-looping
-     animation on a phone costs battery for something barely visible. */
+     the headline would push the LCP element down the page. */
   @media (max-width: 860px) { .hero-mark { display: none; } }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero-mark :global(.mk-ring),
-    .hero-mark :global(.mk-arms) { animation: none; }
-  }
 </style>

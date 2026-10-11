@@ -20,6 +20,16 @@
  *
  * Gradient ids are suffixed per instance; duplicate ids across two marks on one
  * page would make the second one inherit the first's gradients.
+ *
+ * `spin` turns on the idle motion (hero + nav). Everything turns the same way
+ * and never reverses: the rainbow ring at 60s, the two hands together as one
+ * rigid group at 34s, the planet still. The speed difference is what gives it
+ * depth. The hands are one group on purpose — counter-rotating them made the pair
+ * repeatedly close and open, which reads as bouncing even though each arc was
+ * individually travelling one way.
+ *
+ * Deliberately not a spin of the whole mark: at spin speed a ringed circular logo
+ * reads as a loading spinner.
  */
 export interface Props {
   size?: number;
@@ -27,9 +37,10 @@ export interface Props {
   title?: string;
   class?: string;
   decorative?: boolean;
+  spin?: boolean;
 }
 const {
-  size = 32, detail = 'full', title = 'EN2U', class: cls = '', decorative = false,
+  size = 32, detail = 'full', title = 'EN2U', class: cls = '', decorative = false, spin = false,
 } = Astro.props;
 
 const uid = Math.random().toString(36).slice(2, 8);
@@ -61,7 +72,7 @@ const planetR = detail === 'micro' ? 13 : 15;
 const armW  = detail === 'compact' ? 3.6 : 3;
 ---
 <svg
-  class={`en2u-mark ${cls}`}
+  class={`en2u-mark ${spin ? 'mk-spin' : ''} ${cls}`}
   width={size} height={size} viewBox="0 0 64 64"
   role={decorative ? 'presentation' : 'img'}
   aria-label={decorative ? undefined : title}
@@ -123,3 +134,21 @@ const armW  = detail === 'compact' ? 3.6 : 3;
     </g>
   </g>
 </svg>
+
+<style>
+  /* Scoped: every element below is rendered by this component, so no :global. */
+  .mk-spin .mk-ring,
+  .mk-spin .mk-arms {
+    transform-box: view-box;
+    transform-origin: 32px 32px;
+  }
+  .mk-spin .mk-ring { animation: orbit 60s linear infinite; }
+  .mk-spin .mk-arms { animation: orbit 34s linear infinite; }
+
+  @keyframes orbit { to { transform: rotate(360deg); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mk-spin .mk-ring,
+    .mk-spin .mk-arms { animation: none; }
+  }
+</style>

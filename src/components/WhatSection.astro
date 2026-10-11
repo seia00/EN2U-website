@@ -1,0 +1,69 @@
+---
+import { t, type Locale } from '../i18n/strings';
+export interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const s = t(locale);
+const w = s.what;
+---
+{/* ── 01 WHAT WE DO ───────────────────────────────────────────────────────
+     The model, then who writes the curricula. (The mentor bar used to be its own
+     /what-we-do page.) */}
+<section class="section" id="what">
+  <div class="wrap">
+    <p class="eyebrow" data-reveal><span class="n">{w.n}</span> {w.eyebrow}</p>
+    <div class="grid-2 head-grid">
+      <h2 class="title" data-reveal>{w.title}</h2>
+      <p class="body" data-reveal style="--i:1">{w.body}</p>
+    </div>
+    <div class="grid-3 cards" data-stagger>
+      {w.cards.map((c, i) => (
+        <article class="card" data-lift data-reveal style={`--i:${i}`}>
+          <h3>{c.t}</h3>
+          <p>{c.b}</p>
+        </article>
+      ))}
+    </div>
+
+    {/* Mentor criteria as a sequence of thresholds. The selectivity is the
+         message, and the threshold rule is the same primitive as the impact stats. */}
+    <div class="block" id="mentors">
+      <p class="eyebrow" data-reveal>{w.mentors.eyebrow}</p>
+      <div class="grid-2 head-grid">
+        <h3 class="title" data-reveal>{w.mentors.title}</h3>
+        <p class="body" data-reveal style="--i:1">{w.mentors.body}</p>
+      </div>
+      <ol class="gate" data-stagger>
+        {w.mentors.steps.map((st, i) => (
+          <li class="threshold gate-step" data-reveal style={`--fill:${st.fill}; --i:${i}`}>
+            <span class="gate-n">{String(i + 1).padStart(2, '0')}</span>
+            <div class="gate-body">
+              <h4 class="th-label gate-title">{st.t}</h4>
+              <div class="th-rule"><i></i></div>
+              <p class="th-note">{st.b}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cards { margin-top: var(--s-5); }
+
+  .gate { list-style: none; margin-top: var(--s-5); display: grid; gap: var(--s-5); }
+  .gate-step {
+    display: grid; grid-template-columns: auto 1fr; gap: var(--s-5);
+    align-items: start;
+    padding-top: var(--s-5); border-top: 1px solid var(--hairline);
+  }
+  .gate-n {
+    font-family: var(--font-mono); font-size: var(--t-meta);
+    color: var(--accent); padding-top: 2px;
+  }
+  .gate-title { font-size: var(--t-body); font-weight: 600; margin-bottom: var(--s-3); }
+  .gate-body .th-note { max-width: 60ch; }
+  @media (max-width: 760px) {
+    .gate-step { gap: var(--s-4); }
+  }
+</style>

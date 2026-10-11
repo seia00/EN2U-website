@@ -1,0 +1,94 @@
+---
+/**
+ * World map with a pin per place we work. Built at compile time from Natural
+ * Earth (world-atlas, 110m) — zero client JS, one inline SVG.
+ *
+ * Pin style repeats the dot beside each place in the list, so the list is the
+ * legend: hollow grey = base, solid = we taught, half = we supplied curriculum,
+ * hollow brass = we work there (relationship not stated).
+ */
+import { geoNaturalEarth1, geoPath } from 'd3-geo';
+import { feature, mesh } from 'topojson-client';
+import topology from 'world-atlas/countries-110m.json';
+import { places } from '../data/places';
+
+export interface Props {
+  label: string;
+  nodes: readonly { id: string; place: string; kind: string }[];
+}
+const { label, nodes } = Astro.props;
+
+const W = 960;
+const PAD = 14;   // room for pins and labels at the map's edge
+
+const t = topology as any;
+// Used only to fit the projection: Antarctica is a third of the height of the
+// map for nothing we do there, so it must not set the extent.
+const inhabited = {
+  type: 'FeatureCollection',
+  features: (feature(t, t.objects.countries) as any).features.filter((f: any) => f.id !== '010'),
+};
+// Merged land outline for the fill (country polygons would draw every shared
+// border twice), plus one thin mesh for the borders themselves.
+const land = feature(t, t.objects.land);
+const borders = mesh(t, t.objects.countries, (a: any, b: any) => a !== b);
+
+const projection = geoNaturalEarth1().fitWidth(W - PAD * 2, inhabited as any);
+const [tx, ty] = projection.translate();
+projection.translate([tx + PAD, ty + PAD]);
+const toPath = geoPath(projection).digits(0);
+const [, [, bottom]] = toPath.bounds(inhabited as any);
+const H = Math.ceil(bottom + PAD);
+// Cut the merged land off where the inhabited world ends, which removes Antarctica.
+projection.clipExtent([[0, 0], [W, bottom]]);
+
+const landD = toPath(land as any) ?? '';
+const borderD = toPath(borders) ?? '';
+
+const pins = places.flatMap((p) => {
+  const node = nodes.find((n) => n.id === p.id);
+  const xy = projection([p.lon, p.lat]);
+  return node && xy ? [{ ...p, name: node.place, kind: node.kind, x: +xy[0].toFixed(1), y: +xy[1].toFixed(1) }] : [];
+});
+---
+<svg class="world" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label} xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    {/* hard-stop gradient = the half-filled "curriculum" dot */}
+    <linearGradient id="pin-half" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0.5" stop-color="var(--accent)" />
+      <stop offset="0.5" stop-color="var(--surface)" />
+    </linearGradient>
+  </defs>
+  <path class="land" d={landD} />
+  <path class="borders" d={borderD} />
+  {pins.map((p) => (
+    <g class={`pin pin--${p.kind}`}>
+      <circle class="pin-halo" cx={p.x} cy={p.y} r="22" />
+      <circle class="pin-dot" cx={p.x} cy={p.y} r="10.5" />
+      <text class="pin-label" x={p.x + p.label.dx} y={p.y + p.label.dy} text-anchor={p.label.anchor}>{p.name}</text>
+    </g>
+  ))}
+</svg>
+
+<style>
+  .world { width: 100%; height: auto; }
+  .land { fill: color-mix(in srgb, var(--ink) 14%, var(--surface)); }
+  .borders { fill: none; stroke: var(--surface); stroke-width: 0.7; stroke-linejoin: round; }
+
+  .pin-halo { fill: var(--accent); opacity: 0.16; }
+  .pin-dot { stroke-width: 3.5; }
+  .pin--base       .pin-dot { fill: var(--surface); stroke: var(--muted); }
+  .pin--direct     .pin-dot { fill: var(--accent);  stroke: var(--accent); }
+  .pin--curriculum .pin-dot { fill: url(#pin-half); stroke: var(--accent); }
+  .pin--worked     .pin-dot { fill: var(--surface); stroke: var(--accent); }
+  .pin--base .pin-halo { fill: var(--muted); }
+
+  /* Surface-coloured halo keeps names legible over land. */
+  .pin-label {
+    font-family: var(--font-display); font-size: 27px; font-weight: 700;
+    fill: var(--ink);
+    paint-order: stroke; stroke: var(--surface); stroke-width: 7px; stroke-linejoin: round;
+  }
+  /* At phone width 27 map-units is ~9px: unreadable. Dots only; the list names them. */
+  @media (max-width: 620px) { .pin-label { display: none; } }
+</style>

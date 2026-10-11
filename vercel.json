@@ -6,7 +6,11 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/index.html", "destination": "/", "permanent": true }
+    { "source": "/index.html", "destination": "/", "permanent": true },
+    { "source": "/what-we-do", "destination": "/#what", "permanent": true },
+    { "source": "/impact", "destination": "/#impact", "permanent": true },
+    { "source": "/ja/what-we-do", "destination": "/ja#what", "permanent": true },
+    { "source": "/ja/impact", "destination": "/ja#impact", "permanent": true }
   ],
   "headers": [
     {
